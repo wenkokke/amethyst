@@ -1,2 +1,4 @@
 *.agdai
 MAlonzo/**
+_build/
+.stack-work/

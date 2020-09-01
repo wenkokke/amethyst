@@ -1,0 +1,3 @@
+name: amethyst-models
+include: .
+depend: amethyst schmitty standard-library
