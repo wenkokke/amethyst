@@ -27,13 +27,13 @@ toReal : Float → Real Γ
 toReal = lit ∘ float
 
 -- |Typing context with only sort REAL.
-RealCtxt : ℕ → Ctxt
-RealCtxt inputs = List.replicate inputs REAL
+Reals : ℕ → Ctxt
+Reals inputs = List.replicate inputs REAL
 
--- |Turns out that all variables in a RealCtxt have sort REAL?
-RealCtxt∋REAL : (i : Fin n) → RealCtxt n ∋ REAL
-RealCtxt∋REAL zero = (zero , refl)
-RealCtxt∋REAL (suc i) = Prod.map suc id (RealCtxt∋REAL i)
+-- |Turns out that all variables in a Reals have sort REAL?
+Reals∋Real : (i : Fin n) → Reals n ∋ REAL
+Reals∋Real zero = (zero , refl)
+Reals∋Real (suc i) = Prod.map suc id (Reals∋Real i)
 
 
 -- ** Vectors

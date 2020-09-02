@@ -1,3 +1,13 @@
+-- This module contains functions to reflect networks as Schmitty terms and
+-- scripts.
+--
+-- Exports:
+--
+--   - reflectActivation
+--   - reflectLayer
+--   - reflectNetwork
+--   - reflectNetworkAsScript
+--
 module Amethyst.Network.As.Schmitty where
 
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
@@ -83,11 +93,6 @@ reflectNetwork []      = id
 reflectNetwork (l ∷ n) = reflectNetwork n ∘ reflectLayer l
 
 private
-  NetworkCtxt : (inputs outputs : ℕ) → Ctxt
-  NetworkCtxt inputs outputs = RealCtxt inputs ++ RealCtxt outputs
-
-
-private
   -- |The reverse-append of two reversed lists is equivalent to the append of the lists.
   --
   --  NOTE: The variable contexts for a Script are in reversed order, so we pass
@@ -115,11 +120,11 @@ private
     ∎
 
 -- |Convert networks to SMT scripts.
-toScript : Network Float inputs outputs layers → Script [] (NetworkCtxt inputs outputs) []
-toScript {inputs} {outputs} n
-  = Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (RealCtxt inputs) (RealCtxt outputs))
-  $ declare-consts (List.reverse (RealCtxt outputs))
-  $ declare-consts (List.reverse (RealCtxt inputs))
+reflectNetworkAsScript : Network Float inputs outputs layers → Script [] (Reals inputs ++ Reals outputs) []
+reflectNetworkAsScript {inputs} {outputs} n
+  = Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals inputs) (Reals outputs))
+  $ declare-consts (List.reverse (Reals outputs))
+  $ declare-consts (List.reverse (Reals inputs))
   $ assert
       (Vec.foldr _
         (app₂ and)
@@ -128,16 +133,16 @@ toScript {inputs} {outputs} n
           (app₂ eq)
           (Eq.subst
             (λ Γ → Vec (Real Γ) outputs)
-            (Eq.sym (ʳ++-reverse (RealCtxt inputs) (RealCtxt outputs)))
+            (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs)))
             outputVec)
           (reflectNetwork n
             (Eq.subst
               (λ Γ → Vec (Real Γ) inputs)
-              (Eq.sym (ʳ++-reverse (RealCtxt inputs) (RealCtxt outputs)))
+              (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs)))
               inputVec))))
   ∷ []
   where
-    inputVec : Vec (Real (NetworkCtxt inputs outputs)) inputs
-    inputVec = Vec.map (var ∘ injectVar (RealCtxt inputs) ∘ RealCtxt∋REAL) (Vec.allFin inputs)
-    outputVec : Vec (Real (NetworkCtxt inputs outputs)) outputs
-    outputVec = Vec.map (var ∘ raiseVar (RealCtxt inputs) ∘ RealCtxt∋REAL) (Vec.allFin outputs)
+    inputVec : Vec (Real (Reals inputs ++ Reals outputs)) inputs
+    inputVec = Vec.map (var ∘ injectVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin inputs)
+    outputVec : Vec (Real (Reals inputs ++ Reals outputs)) outputs
+    outputVec = Vec.map (var ∘ raiseVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin outputs)
