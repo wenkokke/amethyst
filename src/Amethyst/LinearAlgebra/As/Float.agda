@@ -1,9 +1,8 @@
 module Amethyst.LinearAlgebra.As.Float where
 
-open import Amethyst.Network using (Network; []; _∷_; Layer; Activation)
 open import Amethyst.LinearAlgebra.Base
 open import Data.Bool as Bool using (if_then_else_)
-open import Data.Float as Float using (Float; _≤ᵇ_; _+_; _-_; _*_; _÷_; -_; e^_; tanh)
+open import Data.Float as Float using (Float; _≤ᵇ_; _+_; _-_; _*_; _÷_)
 open import Data.Nat as Nat using (ℕ)
 open import Data.Product using (uncurry)
 open import Data.Vec as Vec using (Vec)

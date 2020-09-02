@@ -5,6 +5,7 @@ import Amethyst.PiecewiseLinear.As.Float
 import Amethyst.PiecewiseLinear.Base
 import Amethyst.Network.As.Schmitty
 import Amethyst.Network.As.Float
+import Amethyst.Network.Base
 import Amethyst.Network
 import Amethyst.PiecewiseLinear
 import Amethyst.LinearAlgebra.As.Schmitty

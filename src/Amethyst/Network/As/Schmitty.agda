@@ -1,6 +1,6 @@
 module Amethyst.Network.As.Schmitty where
 
-open import Amethyst.Network using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
 open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Schmitty
 open import Amethyst.LinearAlgebra.As.Schmitty

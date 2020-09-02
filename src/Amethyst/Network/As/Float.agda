@@ -9,7 +9,7 @@
 --
 module Amethyst.Network.As.Float where
 
-open import Amethyst.Network using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
 open import Amethyst.LinearAlgebra.As.Float
 open import Data.Bool as Bool using (if_then_else_)
 open import Data.Float as Float using (Float; _≤ᵇ_; _+_; _-_; _*_; _÷_; -_; e^_; tanh)

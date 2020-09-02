@@ -8,7 +8,7 @@
 --
 module Amethyst.PiecewiseLinear.As.Schmitty where
 
-open import Amethyst.PiecewiseLinear using (PiecewiseLinear; []; _∷_; LineSegment; head; _+[_*_]; last)
+open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.LinearAlgebra.As.Schmitty
 open import Data.Bool as Bool using (Bool; true; false; if_then_else_)
 open import Data.Float as Float using (Float; _+_; _*_; _≤ᵇ_)

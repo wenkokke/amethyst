@@ -1,11 +1,11 @@
--- This module contains an implementation of linearisation.
+-- This module re-exports the submodules for piecewise-linear functions.
 --
--- Exports:
---
---   - LineSegment (slope; intercept)
---   - PiecewiseLinear ([]; _∷_)
---   - linearise
+--   - Amethyst.PiecewiseLinear.Base
+--   - Amethyst.PiecewiseLinear.As.Float
+--   - Amethyst.PiecewiseLinear.As.Schmitty
 --
 module Amethyst.PiecewiseLinear where
 
 open import Amethyst.PiecewiseLinear.Base public
+open import Amethyst.PiecewiseLinear.As.Float public
+open import Amethyst.PiecewiseLinear.As.Schmitty public
