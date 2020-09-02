@@ -1,5 +1,6 @@
 module index where
 
+import Moons-2-ReLU-10-ReLU-10-Softmax-2
 import Amethyst.PiecewiseLinear.As.Schmitty
 import Amethyst.PiecewiseLinear.As.Float
 import Amethyst.PiecewiseLinear.Base

@@ -1,9 +1,10 @@
 module Moons-2-ReLU-10-ReLU-10-Softmax-2 where
 
-open import Data.Float
-open import Data.Vec
+open import Data.Float as Float using (Float)
+open import Data.List as List using (List; []; _∷_)
+open import Data.Vec as Vec using (Vec; []; _∷_)
 open import Amethyst.Network
-open import Amethyst.Network.As.Float
+open import Amethyst.LinearAlgebra.As.Schmitty
 
 layer0 : Layer Float 2 10
 layer0 = record
@@ -51,3 +52,5 @@ layer2 = record
 model : Network Float 2 2 3
 model = layer0 ∷ (layer1 ∷ (layer2 ∷ []))
 
+script : Script [] (Reals 4) []
+script = reflectNetworkAsScript model

@@ -1,7 +1,7 @@
-AGDA_FILES := $(shell find . -type f -and -path './src/*' -and -name '*.agda')
+AGDA_FILES := $(shell find . -type f -and \( -path './src/*' -or -path './models/*' \) -and -name '*.agda')
 AGDAI_FILES := $(subst .agda,.agdai,$(AGDA_FILES))
-HTML_FILES := $(addsuffix .html,$(subst ./src/,./docs/,$(basename $(AGDA_FILES))))
-AGDA_MODULES := $(subst /,.,$(subst ./src/,,$(basename $(AGDA_FILES))))
+HTML_FILES := $(addsuffix .html,$(subst ./models/,./docs/,$(subst ./src/,./docs/,$(basename $(AGDA_FILES)))))
+AGDA_MODULES := $(subst /,.,$(subst ./models/,,$(subst ./src/,,$(basename $(AGDA_FILES)))))
 
 
 default: listings
@@ -23,7 +23,7 @@ init:
 .PHONY: test
 test: index.agda
 	@echo "Checking amethyst..."
-	@agda -i. -isrc index.agda
+	@agda -i. -isrc -imodels index.agda
 
 
 #####################
@@ -32,7 +32,7 @@ test: index.agda
 
 docs/index.html: index.agda
 	@echo "Generating listings..."
-	@agda -i. -isrc index.agda --html --html-dir=docs
+	@agda -i. -isrc -imodels index.agda --html --html-dir=docs
 
 .PHONY: listings
 listings: $(HTML_FILES)
