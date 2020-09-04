@@ -1,6 +1,7 @@
 module index where
 
 import AND-Gate-2-Sigmoid-1
+import Amethyst.Prelude
 import Moons-2-ReLU-10-ReLU-10-Softmax-2
 import Amethyst.PiecewiseLinear.As.Schmitty
 import Amethyst.PiecewiseLinear.As.Float

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Amethyst.Prelude</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Comment">--------------------------------------------------------------------------------</a>
+<a id="82" class="Comment">-- Amethyst Models: Examples of Neural Network Verification in Agda</a>
+<a id="150" class="Comment">--</a>
+<a id="153" class="Comment">-- This module exports a prelude of definitions often used in writing</a>
+<a id="223" class="Comment">-- verification conditions.</a>
+<a id="251" class="Comment">--</a>
+<a id="254" class="Comment">-- Exports:</a>
+<a id="266" class="Comment">--</a>
+<a id="269" class="Comment">--   - _⇒_</a>
+<a id="280" class="Comment">--   - _∧_</a>
+<a id="291" class="Comment">--   - _==_</a>
+<a id="303" class="Comment">--   - 0·0f</a>
+<a id="315" class="Comment">--   - 1·0f</a>
+<a id="327" class="Comment">--</a>
+<a id="330" class="Comment">--------------------------------------------------------------------------------</a>
+<a id="411" class="Keyword">module</a> <a id="418" href="Amethyst.Prelude.html" class="Module">Amethyst.Prelude</a> <a id="435" class="Keyword">where</a>
+
+<a id="442" class="Keyword">open</a> <a id="447" class="Keyword">import</a> <a id="454" href="Amethyst.Network.html" class="Module">Amethyst.Network</a> <a id="471" class="Keyword">public</a>
+<a id="478" class="Keyword">open</a> <a id="483" class="Keyword">import</a> <a id="490" href="Amethyst.LinearAlgebra.As.Schmitty.html" class="Module">Amethyst.LinearAlgebra.As.Schmitty</a> <a id="525" class="Keyword">public</a>
+<a id="532" class="Keyword">open</a> <a id="537" class="Keyword">import</a> <a id="544" href="Data.List.html" class="Module">Data.List</a> <a id="554" class="Symbol">as</a> <a id="557" class="Module">List</a> <a id="562" class="Keyword">public</a> <a id="569" class="Keyword">using</a> <a id="575" class="Symbol">(</a><a id="576" href="Agda.Builtin.List.html#148" class="Datatype">List</a><a id="580" class="Symbol">;</a> <a id="582" href="Data.List.Base.html#9981" class="InductiveConstructor">[]</a><a id="584" class="Symbol">;</a> <a id="586" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">_∷_</a><a id="589" class="Symbol">)</a>
+<a id="591" class="Keyword">open</a> <a id="596" class="Keyword">import</a> <a id="603" href="Data.Vec.html" class="Module">Data.Vec</a> <a id="612" class="Symbol">as</a> <a id="615" class="Module">Vec</a> <a id="619" class="Keyword">public</a> <a id="626" class="Keyword">using</a> <a id="632" class="Symbol">(</a><a id="633" href="Data.Vec.Base.html#959" class="Datatype">Vec</a><a id="636" class="Symbol">;</a> <a id="638" href="Data.Vec.Base.html#995" class="InductiveConstructor">[]</a><a id="640" class="Symbol">;</a> <a id="642" href="Data.Vec.Base.html#1014" class="InductiveConstructor Operator">_∷_</a><a id="645" class="Symbol">;</a> <a id="647" href="Data.Vec.Base.html#5711" class="Function Operator">[_]</a><a id="650" class="Symbol">)</a>
+<a id="652" class="Keyword">open</a> <a id="657" class="Keyword">import</a> <a id="664" href="SMT.Theories.Reals.html" class="Module">SMT.Theories.Reals</a> <a id="683" class="Symbol">as</a> <a id="686" class="Module">Reals</a>
+<a id="692" class="Keyword">open</a> <a id="697" class="Keyword">import</a> <a id="704" href="SMT.Backend.Z3.html" class="Module">SMT.Backend.Z3</a> <a id="719" href="SMT.Theories.Reals.html#8232" class="Function">Reals.theory</a> <a id="732" class="Keyword">public</a> <a id="739" class="Keyword">using</a> <a id="745" class="Symbol">(</a><a id="746" href="SMT.Backend.Z3.html#1335" class="Function">z3</a><a id="748" class="Symbol">)</a>
+<a id="750" class="Keyword">open</a> <a id="755" class="Keyword">import</a> <a id="762" href="SMT.Backend.CVC4.html" class="Module">SMT.Backend.CVC4</a> <a id="779" href="SMT.Theories.Reals.html#8232" class="Function">Reals.theory</a> <a id="792" class="Keyword">public</a> <a id="799" class="Keyword">using</a> <a id="805" class="Symbol">(</a><a id="806" href="SMT.Backend.CVC4.html#1545" class="Function">cvc4</a><a id="810" class="Symbol">)</a>
+
+<a id="813" class="Keyword">private</a>
+  <a id="823" class="Keyword">variable</a>
+    <a id="836" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a> <a id="838" class="Symbol">:</a> <a id="840" href="SMT.Script.Base.html#1026" class="Function">Ctxt</a>
+
+<a id="_⇒_"></a><a id="846" href="Amethyst.Prelude.html#846" class="Function Operator">_⇒_</a> <a id="_∧_"></a><a id="850" href="Amethyst.Prelude.html#850" class="Function Operator">_∧_</a> <a id="854" class="Symbol">:</a> <a id="856" class="Symbol">(</a><a id="857" href="Amethyst.Prelude.html#857" class="Bound">a</a> <a id="859" href="Amethyst.Prelude.html#859" class="Bound">b</a> <a id="861" class="Symbol">:</a> <a id="863" href="SMT.Script.Base.html#1472" class="Datatype">Term</a> <a id="868" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a> <a id="870" href="SMT.Theories.Reals.html#1210" class="InductiveConstructor">BOOL</a><a id="874" class="Symbol">)</a> <a id="876" class="Symbol">→</a> <a id="878" href="SMT.Script.Base.html#1472" class="Datatype">Term</a> <a id="883" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a> <a id="885" href="SMT.Theories.Reals.html#1210" class="InductiveConstructor">BOOL</a>
+<a id="890" href="Amethyst.Prelude.html#846" class="Function Operator">_⇒_</a> <a id="894" class="Symbol">=</a> <a id="896" href="SMT.Script.Base.html#1934" class="InductiveConstructor">app₂</a> <a id="901" href="SMT.Theories.Core.Extensions.html#1326" class="Function">implies</a>
+<a id="909" href="Amethyst.Prelude.html#850" class="Function Operator">_∧_</a> <a id="913" class="Symbol">=</a> <a id="915" href="SMT.Script.Base.html#1934" class="InductiveConstructor">app₂</a> <a id="920" href="SMT.Theories.Core.Extensions.html#1401" class="Function">and</a>
+
+<a id="_==_"></a><a id="925" href="Amethyst.Prelude.html#925" class="Function Operator">_==_</a> <a id="930" class="Symbol">:</a> <a id="932" class="Symbol">(</a><a id="933" href="Amethyst.Prelude.html#933" class="Bound">x</a> <a id="935" href="Amethyst.Prelude.html#935" class="Bound">y</a> <a id="937" class="Symbol">:</a> <a id="939" href="Amethyst.LinearAlgebra.As.Schmitty.html#1164" class="Function">Real</a> <a id="944" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a><a id="945" class="Symbol">)</a> <a id="947" class="Symbol">→</a> <a id="949" href="SMT.Script.Base.html#1472" class="Datatype">Term</a> <a id="954" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a> <a id="956" href="SMT.Theories.Reals.html#1210" class="InductiveConstructor">BOOL</a>
+<a id="961" href="Amethyst.Prelude.html#925" class="Function Operator">_==_</a> <a id="966" class="Symbol">=</a> <a id="968" href="SMT.Script.Base.html#1934" class="InductiveConstructor">app₂</a> <a id="973" href="SMT.Theories.Reals.html#4615" class="InductiveConstructor">eq</a>
+
+<a id="0·0f"></a><a id="977" href="Amethyst.Prelude.html#977" class="Function">0·0f</a> <a id="1·0f"></a><a id="982" href="Amethyst.Prelude.html#982" class="Function">1·0f</a> <a id="987" class="Symbol">:</a> <a id="989" href="Amethyst.LinearAlgebra.As.Schmitty.html#1164" class="Function">Real</a> <a id="994" href="Amethyst.Prelude.html#836" class="Generalizable">Γ</a>
+<a id="996" href="Amethyst.Prelude.html#977" class="Function">0·0f</a> <a id="1001" class="Symbol">=</a> <a id="1003" href="SMT.Script.Base.html#1559" class="InductiveConstructor">lit</a> <a id="1007" class="Symbol">(</a><a id="1008" href="SMT.Theories.Reals.html#3796" class="InductiveConstructor">float</a> <a id="1014" class="Number">0.0</a><a id="1017" class="Symbol">)</a>
+<a id="1019" href="Amethyst.Prelude.html#982" class="Function">1·0f</a> <a id="1024" class="Symbol">=</a> <a id="1026" href="SMT.Script.Base.html#1559" class="InductiveConstructor">lit</a> <a id="1030" class="Symbol">(</a><a id="1031" href="SMT.Theories.Reals.html#3796" class="InductiveConstructor">float</a> <a id="1037" class="Number">1.0</a><a id="1040" class="Symbol">)</a>
+</pre></body></html>

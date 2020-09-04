@@ -2,16 +2,17 @@
 -- Amethyst: Neural Network Verification in Agda
 --
 -- This module contains functions to reflect networks as Schmitty terms. It also
--- provides the `reflectNetworkAsScript` function, which reflects a network as a
+-- provides the `withReflectedNetwork` function, which reflects a network as a
 -- Schmitty term, and wraps that term in a script which declares the appropriate
--- constants for the inputs and outputs.
+-- constants for the inputs and outputs, and allows the caller to append further
+-- portions of script.
 --
 -- Exports:
 --
 --   - reflectActivation
 --   - reflectLayer
 --   - reflectNetwork
---   - reflectNetworkAsScript
+--   - withReflectedNetworkAsScript
 --
 --------------------------------------------------------------------------------
 module Amethyst.Network.As.Schmitty where
@@ -125,30 +126,30 @@ private
       xs ++ ys
     ∎
 
--- |Convert networks to SMT scripts.
-reflectNetworkAsScript : Network Float inputs outputs layers → Script [] (Reals inputs ++ Reals outputs) []
-reflectNetworkAsScript {inputs} {outputs} n
-  = Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals inputs) (Reals outputs))
-  $ declare-consts (List.reverse (Reals outputs))
-  $ declare-consts (List.reverse (Reals inputs))
-  $ assert
+
+-- |Convert a networks to an SMT script, and allow the caller to append further commands.
+withReflectedNetworkAsScript
+  : ∀ {Γ Ξ}
+  → Network Float inputs outputs layers
+  → ( (iv : Vec (Real (Reals inputs ++ Reals outputs)) inputs)
+    → (ov : Vec (Real (Reals inputs ++ Reals outputs)) outputs)
+    → (Script (Reals inputs ++ Reals outputs) Γ Ξ))
+    → Script [] Γ Ξ
+withReflectedNetworkAsScript {inputs} {outputs} n k
+  = ( Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals inputs) (Reals outputs))
+    $ declare-consts (List.reverse (Reals outputs))
+    $ declare-consts (List.reverse (Reals inputs))
+    $ assert
       (Vec.foldr _
         (app₂ and)
         (lit (bool true))
         (Vec.zipWith
           (app₂ eq)
-          (Eq.subst
-            (λ Γ → Vec (Real Γ) outputs)
-            (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs)))
-            outputVec)
+          (Eq.subst (λ Γ → Vec (Real Γ) outputs) (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs))) ov)
           (reflectNetwork n
-            (Eq.subst
-              (λ Γ → Vec (Real Γ) inputs)
-              (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs)))
-              inputVec))))
-  ∷ []
+            (Eq.subst (λ Γ → Vec (Real Γ) inputs) (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs))) iv))))
+    ∷ []
+    ) ◆ k iv ov
   where
-    inputVec : Vec (Real (Reals inputs ++ Reals outputs)) inputs
-    inputVec = Vec.map (var ∘ injectVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin inputs)
-    outputVec : Vec (Real (Reals inputs ++ Reals outputs)) outputs
-    outputVec = Vec.map (var ∘ raiseVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin outputs)
+  iv = Vec.map (var ∘ injectVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin inputs)
+  ov = Vec.map (var ∘ raiseVar  (Reals inputs) ∘ Reals∋Real) (Vec.allFin outputs)
