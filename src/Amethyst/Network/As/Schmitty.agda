@@ -1,5 +1,10 @@
--- This module contains functions to reflect networks as Schmitty terms and
--- scripts.
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module contains functions to reflect networks as Schmitty terms. It also
+-- provides the `reflectNetworkAsScript` function, which reflects a network as a
+-- Schmitty term, and wraps that term in a script which declares the appropriate
+-- constants for the inputs and outputs.
 --
 -- Exports:
 --
@@ -8,6 +13,7 @@
 --   - reflectNetwork
 --   - reflectNetworkAsScript
 --
+--------------------------------------------------------------------------------
 module Amethyst.Network.As.Schmitty where
 
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)

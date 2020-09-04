@@ -1,3 +1,26 @@
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module exports the basic operations for linear algebra over Schmitty
+-- terms.
+--
+-- Exports:
+--
+--   - Real
+--   - toReal
+--   - Reals
+--   - Reals∋Real
+--   - sum
+--   - _⊕_
+--   - _⊛_
+--   - _·_
+--   - scale
+--   - normalise
+--   - _v⊡m_
+--   - _⊡_
+--   - _m⊡v_
+--
+--------------------------------------------------------------------------------
 module Amethyst.LinearAlgebra.As.Schmitty where
 
 open import Amethyst.LinearAlgebra.Base

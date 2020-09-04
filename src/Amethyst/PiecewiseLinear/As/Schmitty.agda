@@ -1,11 +1,16 @@
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
 -- This module contains functions to reflect piecewise-linear functions to
--- Schmitty terms.
+-- Schmitty terms. The various reflections correspond to the various evaluations,
+-- see `Amethyst.PiecewiseLinear.As.Float`.
 --
 -- Exports:
 --
 --  - reflectExtrap
 --  - reflectBounded
 --
+--------------------------------------------------------------------------------
 module Amethyst.PiecewiseLinear.As.Schmitty where
 
 open import Amethyst.PiecewiseLinear.Base

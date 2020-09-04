@@ -1,4 +1,7 @@
--- This module defines the basic datatypes for representing neural networks.
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module exports the basic types for representing neural networks.
 --
 -- Exports:
 --
@@ -6,6 +9,7 @@
 --   - Layer      (activation; weights; biases)
 --   - Network    ([]; _∷_)
 --
+--------------------------------------------------------------------------------
 module Amethyst.Network.Base where
 
 open import Data.Fin as Fin using (Fin)

@@ -1,9 +1,13 @@
--- This module re-exports the submodules for neural networks.
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module re-exports the submodules for neural networks:
 --
 --   - Amethyst.Network.Base
 --   - Amethyst.Network.As.Float
 --   - Amethyst.Network.As.Schmitty
 --
+--------------------------------------------------------------------------------
 module Amethyst.Network where
 
 open import Amethyst.Network.Base public

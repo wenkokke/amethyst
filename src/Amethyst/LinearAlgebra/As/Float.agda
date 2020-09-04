@@ -1,3 +1,21 @@
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module exports the basic operations for linear algebra over Floats.
+--
+-- Exports:
+--
+--   - sum
+--   - _⊕_
+--   - _⊛_
+--   - _·_
+--   - scale
+--   - normalise
+--   - _v⊡m_
+--   - _⊡_
+--   - _m⊡v_
+--
+--------------------------------------------------------------------------------
 module Amethyst.LinearAlgebra.As.Float where
 
 open import Amethyst.LinearAlgebra.Base

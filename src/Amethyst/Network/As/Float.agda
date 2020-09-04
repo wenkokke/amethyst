@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
 -- This module contains functions to evaluate neural networks as functions on
 -- vectors of floating-point numbers.
 --
@@ -7,6 +10,7 @@
 --  - evalLayer
 --  - evalNetwork
 --
+--------------------------------------------------------------------------------
 module Amethyst.Network.As.Float where
 
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)

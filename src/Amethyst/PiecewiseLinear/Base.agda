@@ -1,4 +1,25 @@
--- This module contains an implementation of linearisation.
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module contains an implementation of naive linearisation, which
+-- approximates non-linear functions using piecewise-linear approximations,
+-- i.e., with a sequence of connected line segments.
+-- The function `linearise` approximates a function `f : Float →  Float` over
+-- an interval `(lower, upper)` using `pieces` line segments:
+--
+--   1. We compute a step size `step` which divides the interval `(lower,
+--      upper)` into `pieces` subintervals of size `step`.
+--   2. For each sub-interval `(lowerᵢ, upperᵢ)`, where `upperᵢ` is `lowerᵢ +
+--      step`, we pick the line segment `fᵢ(x) = mᵢ * x + bᵢ`, with slope `mᵢ`
+--      and y-intercept `bᵢ`, from `(lowerᵢ, f(lowerᵢ))` to `(upperᵢ, f(upperᵢ))`.
+--   3. Finally, we connect all line segments `fᵢ`. The result is a piecewise-
+--      linear approximation for `f` over the interval `(lower, upper)`.
+--
+-- The number of segments determines the granularity of the approximation,
+-- though the approximations do not necessarily becomes less precise with an
+-- increased number of segments: e.g., for the exponential function and tanh,
+-- we observe that approximations which use an odd number `pieces` outperform
+-- approximations which use `pieces + 1` segments.
 --
 -- Exports:
 --
@@ -6,12 +27,14 @@
 --   - PiecewiseLinear ([]; _∷_)
 --   - linearise
 --
--- Package private:
+-- NOTE: The module also exports the following definitions, but these should be
+--       considered "package private", and should not be relied upon.
 --
 --   - head
 --   - _+[_*_]
 --   - last
 --
+--------------------------------------------------------------------------------
 module Amethyst.PiecewiseLinear.Base where
 
 open import Data.Bool as Bool using (Bool; true; false; if_then_else_)

@@ -1,10 +1,36 @@
--- This module contains functions to evaluate piecewise-linear functions as functions on floating-point
+--------------------------------------------------------------------------------
+-- Amethyst: Neural Network Verification in Agda
+--
+-- This module contains functions to evaluate piecewise-linear functions as
+-- functions on floating-point numbers.
+-- Piecewise-linear approximations are built over an interval `(lower, upper)`.
+-- How should a piecewise-linear approximation behave outside of this interval?
+-- We have three simple options:
+--
+--   1. We can extrapolate the first and last line segments beyond the interval
+--      boundaries. This is implemented as `evalExtrap`.
+--   2. We can return the minimum point, `f(lower)`, for inputs below the
+--      interval, and return the maximum point, `f(upper)`, for inputs above the
+--      interval. This is implemented as `evalBounded`.
+--   3. We can combine (1) and (2). We start by extrapolating, following (1),
+--      and allow the user to specify lower and upper bounds, where we switch to
+--      returning the constant minimum and maximum, following (2). This is not
+--      currently implemented.
+--
+-- The first option is unsound, as it may result in cases where the codomain of
+-- the piecewise-linear approximation is not a subset of the codomain of the
+-- approximated function. For instance, the piecewise-linear approximation of
+-- the exp-function may return values <0 for a sufficiently small input.
+-- However, we have found that it works well in practice. The second option is
+-- sound, albeit a bit crude. The third option combines the best of (1) and (2),
+-- but requires manual tweaking.
 --
 -- Exports:
 --
 --   - evalExtrap
 --   - evalBounded
 --
+--------------------------------------------------------------------------------
 module Amethyst.PiecewiseLinear.As.Float where
 
 open import Amethyst.PiecewiseLinear.Base using (PiecewiseLinear; []; _∷_; LineSegment; head; _+[_*_]; last)
