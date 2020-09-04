@@ -26,9 +26,11 @@ layer = record
 model : Network Float 2 1 1
 model = layer ∷ []
 
-script : Script [] (REAL ∷ REAL ∷ REAL ∷ []) (SAT ∷ [])
+script : Script [] (Reals 2 ++ Reals 1) (SAT ∷ [])
 script = withReflectedNetworkAsScript model $ λ where
-  (i₀ ∷ i₁ ∷ []) (o₀ ∷ [])
+  -- give names to input and output nodes
+  iv@(i₀ ∷ i₁ ∷ []) ov@(o₀ ∷ [])
+  -- give remainder of the smt-lib script
     → assert (((i₀ == 0·0f) ∧ (i₁ == 0·0f)) ⇒ (o₀ == 0·0f))
     ∷ assert (((i₀ == 0·0f) ∧ (i₁ == 1·0f)) ⇒ (o₀ == 0·0f))
     ∷ assert (((i₀ == 1·0f) ∧ (i₁ == 0·0f)) ⇒ (o₀ == 0·0f))
@@ -37,4 +39,13 @@ script = withReflectedNetworkAsScript model $ λ where
     ∷ []
 
 _ : z3 script ≡ sat ∷ []
+_ = refl
+
+_ : evalNetwork model (0.0 ∷ 0.0 ∷ []) ≡ (0.0 ∷ [])
+_ = refl
+_ : evalNetwork model (0.0 ∷ 1.0 ∷ []) ≡ (0.0 ∷ [])
+_ = refl
+_ : evalNetwork model (1.0 ∷ 0.0 ∷ []) ≡ (0.0 ∷ [])
+_ = refl
+_ : evalNetwork model (1.0 ∷ 1.0 ∷ []) ≡ (1.0 ∷ [])
 _ = refl

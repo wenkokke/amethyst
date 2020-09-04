@@ -51,6 +51,3 @@ layer2 = record
 
 model : Network Float 2 2 3
 model = layer0 ∷ (layer1 ∷ (layer2 ∷ []))
-
-script : Script [] (Reals 4) []
-script = reflectNetworkAsScript model
