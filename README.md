@@ -77,7 +77,7 @@ Getting Started
 
 Amethyst requires Agda and several Agda libraries to work:
 
-- [Agda >= 2.6.2-20eb4f3][agda]
+- [agda][agda] (latest)
 - [agda-stdlib][agda-stdlib] (latest)
 - [agdarsec][agdarsec] (latest)
 - [schmitty][schmitty] (latest)
@@ -125,9 +125,9 @@ using the Z3 API.
 [Sapphire]: https://github.com/wenkokke/sapphire
 [StarChild]: https://github.com/wenkokke/starchild
 [AND-Gate-2-Sigmoid-1]: https://wenkokke.github.io/amethyst/AND-Gate-2-Sigmoid-1.html
-[agda]: https://github.com/agda/agda/commit/20eb4f3ebb6eb73385f2651cf9b5c4bdac9a2f10
+[agda]: https://github.com/agda/agda
 [agda-stdlib]: https://github.com/agda/agda-stdlib
-[agdarsec]: https://github.com/gallais/agdarsec/tree/acd319c342c32dcb1fc5191091ae39ca07b3676e
+[agdarsec]: https://github.com/gallais/agdarsec
 [schmitty]: https://github.com/wenkokke/schmitty
 [Z3]: https://github.com/Z3Prover/z3
 [CVC4]: https://github.com/CVC4/CVC4
