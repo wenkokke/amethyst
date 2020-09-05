@@ -102,10 +102,7 @@ and the external solvers in `.agda/executables`:
 
 We realise this is quite a lot, and to make matters worse, Amethyst and many of
 its dependencies are under active development. To make matters easier, we
-provide a Dockerfile:
-```Dockerfile
-# pending…
-```
+provide a [Dockerfile](Dockerfile)!
 
 Related Work
 =================================================================================
@@ -134,4 +131,3 @@ using the Z3 API.
 [schmitty]: https://github.com/wenkokke/schmitty
 [Z3]: https://github.com/Z3Prover/z3
 [CVC4]: https://github.com/CVC4/CVC4
-
