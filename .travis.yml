@@ -12,7 +12,6 @@ addons:
   apt:
     packages:
       - z3
-      - cvc4
       - zlib1g-dev
       - libicu-dev
 
