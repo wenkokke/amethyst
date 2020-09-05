@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TZ Europe/London
 ENV LANG C.UTF-8
 RUN apt-get update -y
-RUN apt-get install -y curl git make tzdata
+RUN apt-get install -y git make tzdata
 
 # Setup Z3, CVC4, etc...
 RUN apt-get install -y z3 cvc4

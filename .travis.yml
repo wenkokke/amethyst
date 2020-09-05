@@ -1,0 +1,42 @@
+dist: focal
+
+language: haskell
+
+cabal: "2.4"
+
+matrix:
+  include:
+    - ghc: 8.6.5
+
+addons:
+  apt:
+    packages:
+      - z3
+      - cvc4
+      - zlib1g-dev
+      - libicu-dev
+
+cache:
+  directories:
+    - "$HOME/.cabal"
+    - "$HOME/agda"
+    - "$HOME/agda-stdlib"
+    - "$HOME/agdarsec"
+    - "$HOME/schmitty"
+
+install:
+  - cabal v1-update
+  - cabal v1-install alex happy
+  - AGDA_HOME=$HOME/agda make install-agda-source
+  - AGDA_HOME=$HOME/agda make install-agda-dependencies
+  - AGDA_HOME=$HOME/agda make install-agda
+  - AGDA_STDLIB_HOME=$HOME/agda-stdlib make install-agda-stdlib
+  - AGDARSEC_HOME=$HOME/agdarsec make install-agdarsec
+  - SCHMITTY_HOME=$HOME/schmitty make install-schmitty
+  - ghc --version
+  - cabal --version
+  - agda --version
+  - z3 --version
+
+script:
+  - make test
