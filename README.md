@@ -63,7 +63,7 @@ _ = refl
 ```
 
 Yeah, that was easier… However, the SMT solver also allows us to run universally
-and existentially quantifier expressions:
+and existentially quantified expressions:
 
 ```agda
 -- pending…
@@ -77,8 +77,8 @@ Getting Started
 
 Amethyst requires Agda and several Agda libraries to work:
 
-- [agda][agda] (latest)
-- [agda-stdlib][agda-stdlib] (latest)
+- [agda][agda] (>= 2.6.2-20eb4f)
+- [agda-stdlib][agda-stdlib] (experimental)
 - [agdarsec][agdarsec] (latest)
 - [schmitty][schmitty] (latest)
 
@@ -125,8 +125,8 @@ using the Z3 API.
 [Sapphire]: https://github.com/wenkokke/sapphire
 [StarChild]: https://github.com/wenkokke/starchild
 [AND-Gate-2-Sigmoid-1]: https://wenkokke.github.io/amethyst/AND-Gate-2-Sigmoid-1.html
-[agda]: https://github.com/agda/agda
-[agda-stdlib]: https://github.com/agda/agda-stdlib
+[agda]: https://github.com/agda/agda/commit/20eb4f
+[agda-stdlib]: https://github.com/agda/agda-stdlib/tree/experimental
 [agdarsec]: https://github.com/gallais/agdarsec
 [schmitty]: https://github.com/wenkokke/schmitty
 [Z3]: https://github.com/Z3Prover/z3
