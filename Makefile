@@ -79,7 +79,7 @@ AGDARSEC_PR ?= 17
 AGDARSEC_BRANCH ?= master
 AGDARSEC_COMMIT_HASH ?= HEAD
 
-SHCMITTY_HOME ?= $(AGDA_DIR)/schmitty
+SCHMITTY_HOME ?= $(AGDA_DIR)/schmitty
 SCHMITTY_REPO ?= https://github.com/wenkokke/schmitty
 SCHMITTY_BRANCH ?= master
 SCHMITTY_COMMIT_HASH ?= HEAD
@@ -143,7 +143,7 @@ endif
 install-agda-stdlib: $(AGDA_LIBRARIES_FILE)
 ifndef AGDA_STDLIB_HOME
 	@echo "Please set installation path using AGDA_STDLIB_HOME:\n"
-	@echo "  AGDA_STDLIB_HOME=$HOME/agda make install-agda-stdlib"
+	@echo "  AGDA_STDLIB_HOME=\$HOME/agda make install-agda-stdlib"
 else
 ifneq ($(dirname $(AGDA_STDLIB_HOME)),)
 	if [ ! -d "$(dirname $(AGDA_STDLIB_HOME))" ]; then mkdir -p $(dirname $(AGDA_STDLIB_HOME)); fi
@@ -166,7 +166,7 @@ endif
 install-agdarsec: $(AGDA_LIBRARIES_FILE)
 ifndef AGDARSEC_HOME
 	@echo "Please set installation path using AGDARSEC_HOME:\n"
-	@echo "  AGDARSEC_HOME=$HOME/agda make install-agdarsec"
+	@echo "  AGDARSEC_HOME=\$HOME/agda make install-agdarsec"
 else
 ifneq ($(dirname $(AGDARSEC_HOME)),)
 	if [ ! -d "$(dirname $(AGDARSEC_HOME))" ]; then mkdir -p $(dirname $(AGDARSEC_HOME)); fi
@@ -189,7 +189,7 @@ endif
 install-schmitty: $(AGDA_LIBRARIES_FILE)
 ifndef SCHMITTY_HOME
 	@echo "Please set installation path using SCHMITTY_HOME:\n"
-	@echo "  SCHMITTY_HOME=$HOME/agda make install-schmitty"
+	@echo "  SCHMITTY_HOME=\$HOME/agda make install-schmitty"
 else
 ifneq ($(dirname $(SCHMITTY_HOME)),)
 	if [ ! -d "$(dirname $(SCHMITTY_HOME))" ]; then mkdir -p $(dirname $(SCHMITTY_HOME)); fi
