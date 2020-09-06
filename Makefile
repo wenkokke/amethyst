@@ -95,26 +95,22 @@ SCHMITTY_COMMIT_HASH ?= HEAD
 .PHONY: install-agda
 install-agda: $(CABAL_BIN)/agda
 
-
 $(CABAL_BIN)/agda: $(AGDA_HOME)/src
 ifndef AGDA_HOME
 	@echo "Please set installation path using AGDA_HOME:\n"
 	@echo "  AGDA_HOME=$HOME/agda make install-agda"
 else
-ifneq ($(dirname $(AGDA_HOME)),)
-	if [ ! -d "$(dirname $(AGDA_HOME))" ]; \
-		then mkdir -p $(dirname $(AGDA_HOME)); fi
-endif
+	mkdir -p $(AGDA_HOME)
+	cd $(AGDA_HOME) \
+		&& git init \
+		&& git remote add origin $(AGDA_REPO)
 ifdef AGDA_PR
-	if [ ! -d "$(AGDA_HOME)" ]; then \
-		git clone $(AGDA_REPO) $(AGDA_HOME); fi
 	cd $(AGDA_HOME) \
 		&& git fetch origin pull/$(AGDA_PR)/head:pull-$(AGDA_PR) \
 		&& git checkout pull-$(AGDA_PR)
 else
-	if [ ! -d "$(AGDA_HOME)" ]; then \
-		git clone --single-branch --branch $(AGDA_BRANCH) $(AGDA_REPO) $(AGDA_HOME); fi
 	cd $(AGDA_HOME) \
+		&& git fetch origin $(AGDA_BRANCH) \
 		&& git checkout $(AGDA_COMMIT_HASH)
 endif
 	cd $(AGDA_HOME) \
@@ -143,19 +139,18 @@ $(AGDA_EXECUTABLES_FILE):
 install-agda-stdlib: $(AGDA_STDLIB_HOME)/src
 
 $(AGDA_STDLIB_HOME)/src: $(AGDA_LIBRARIES_FILE)
-ifneq ($(dirname $(AGDA_STDLIB_HOME)),)
-	if [ ! -d "$(dirname $(AGDA_STDLIB_HOME))" ]; then \
-		mkdir -p $(dirname $(AGDA_STDLIB_HOME)); fi
-endif
+	mkdir -p $(AGDA_STDLIB_HOME)
+	cd $(AGDA_STDLIB_HOME) \
+		&& git init \
+		&& git remote add origin $(AGDA_STDLIB_REPO)
 ifdef AGDA_STDLIB_PR
-	git clone $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME)
 	cd $(AGDA_STDLIB_HOME) \
 		&& git fetch origin pull/$(AGDA_STDLIB_PR)/head:pull-$(AGDA_STDLIB_PR) \
 		&& git checkout pull-$(AGDA_STDLIB_PR)
 else
-	if [ ! -d "$(AGDA_STDLIB_HOME)" ]; then \
-		git clone --single-branch --branch $(AGDA_STDLIB_BRANCH) $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME); fi
-	cd $(AGDA_STDLIB_HOME) && git checkout $(AGDA_STDLIB_COMMIT_HASH)
+	cd $(AGDA_STDLIB_HOME) \
+		&& git fetch origin $(AGDA_STDLIB_BRANCH) \
+		&& git checkout $(AGDA_STDLIB_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(AGDA_STDLIB_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDA_STDLIB_HOME)/standard-library.agda-lib >> $(AGDA_LIBRARIES_FILE)
@@ -170,17 +165,18 @@ endif
 install-agdarsec: $(AGDARSEC_HOME)/src
 
 $(AGDARSEC_HOME)/src: $(AGDA_LIBRARIES_FILE)
-ifneq ($(dirname $(AGDARSEC_HOME)),)
-	mkdir -p $(dirname $(AGDARSEC_HOME))
-endif
+	mkdir -p $(AGDARSEC_HOME)
+	cd $(AGDARSEC_HOME) \
+		&& git init \
+		&& git remote add origin $(AGDARSEC_REPO)
 ifdef AGDARSEC_PR
-	git clone $(AGDARSEC_REPO) $(AGDARSEC_HOME)
 	cd $(AGDARSEC_HOME) \
 		&& git fetch origin pull/$(AGDARSEC_PR)/head:pull-$(AGDARSEC_PR) \
 		&& git checkout pull-$(AGDARSEC_PR)
 else
-	git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME)
-	cd $(AGDARSEC_HOME) && git checkout $(AGDARSEC_COMMIT_HASH)
+	cd $(AGDARSEC_HOME) \
+		&& git fetch origin $(AGDARSEC_BRANCH) \
+		&& git checkout $(AGDARSEC_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDARSEC_HOME)/agdarsec.agda-lib >> $(AGDA_LIBRARIES_FILE)
@@ -195,22 +191,27 @@ endif
 install-schmitty: $(SCHMITTY_HOME)/src
 
 $(SCHMITTY_HOME)/src: $(AGDA_LIBRARIES_FILE)
-ifneq ($(dirname $(SCHMITTY_HOME)),)
-	if [ ! -d "$(dirname $(SCHMITTY_HOME))" ]; then \
-		mkdir -p $(dirname $(SCHMITTY_HOME)); fi
-endif
+	mkdir -p $(SCHMITTY_HOME)
+	cd $(SCHMITTY_HOME) \
+		&& git init \
+		&& git remote add origin $(SCHMITTY_REPO)
 ifdef SCHMITTY_PR
-	git clone $(SCHMITTY_REPO) $(SCHMITTY_HOME)
 	cd $(SCHMITTY_HOME) \
 		&& git fetch origin pull/$(SCHMITTY_PR)/head:pull-$(SCHMITTY_PR) \
 		&& git checkout pull-$(SCHMITTY_PR)
 else
-	git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME)
-	cd $(SCHMITTY_HOME) && git checkout $(SCHMITTY_COMMIT_HASH)
+	cd $(SCHMITTY_HOME) \
+		&& git fetch origin $(SCHMITTY_BRANCH) \
+		&& git checkout $(SCHMITTY_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(SCHMITTY_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(SCHMITTY_HOME)/schmitty.agda-lib >> $(AGDA_LIBRARIES_FILE)
 endif
+
+
+########################
+# Register SMT Solvers #
+########################
 
 .PHONY: register-z3
 register-z3: $(AGDA_EXECUTABLES_FILE)
