@@ -3,6 +3,8 @@ AGDAI_FILES := $(subst .agda,.agdai,$(AGDA_FILES))
 HTML_FILES := $(addsuffix .html,$(subst ./models/,./docs/,$(subst ./src/,./docs/,$(basename $(AGDA_FILES)))))
 AGDA_MODULES := $(subst /,.,$(subst ./models/,,$(subst ./src/,,$(basename $(AGDA_FILES)))))
 
+AGDA ?= agda
+
 
 default: listings
 
@@ -23,7 +25,7 @@ init:
 .PHONY: test
 test: index.agda
 	@echo "Checking amethyst..."
-	@agda -i. -isrc -imodels index.agda
+	$(AGDA) -i. -isrc -imodels index.agda
 
 
 #####################
@@ -32,7 +34,7 @@ test: index.agda
 
 docs/index.html: index.agda
 	@echo "Generating listings..."
-	@agda -i. -isrc -imodels index.agda --html --html-dir=docs
+	$(AGDA) -i. -isrc -imodels index.agda --html --html-dir=docs
 
 .PHONY: listings
 listings: $(HTML_FILES)

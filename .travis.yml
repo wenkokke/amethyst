@@ -44,4 +44,4 @@ install:
   - z3 --version
 
 script:
-  - make test
+  - AGDA=$HOME/.cabal/bin/agda make test
