@@ -68,6 +68,7 @@ AGDA_REPO ?= https://github.com/agda/agda
 AGDA_PR ?= 4885
 AGDA_BRANCH ?= master
 AGDA_COMMIT_HASH ?= HEAD
+CABAL_BIN ?= $(HOME)/.cabal/bin
 
 AGDA_STDLIB_HOME ?= $(AGDA_DIR)/standard-library
 AGDA_STDLIB_REPO ?= https://github.com/agda/agda-stdlib
@@ -86,16 +87,15 @@ SCHMITTY_REPO ?= https://github.com/wenkokke/schmitty
 SCHMITTY_BRANCH ?= master
 SCHMITTY_COMMIT_HASH ?= HEAD
 
-$(AGDA_LIBRARIES_FILE):
-	mkdir -p $(AGDA_DIR)
-	touch $(AGDA_LIBRARIES_FILE)
 
-$(AGDA_EXECUTABLES_FILE):
-	mkdir -p $(AGDA_DIR)
-	touch $(AGDA_EXECUTABLES_FILE)
+################
+# Install Agda #
+################
 
-.PHONY: install-agda-source
-install-agda-source:
+.PHONY: install-agda
+install-agda: $(CABAL_BIN)/agda
+
+$(AGDA_HOME)/src:
 ifndef AGDA_HOME
 	@echo "Please set installation path using AGDA_HOME:\n"
 	@echo "  AGDA_HOME=$HOME/agda make install-agda"
@@ -120,18 +120,7 @@ endif
 		&& git submodule update --init src/fix-whitespace
 endif
 
-.PHONY: install-agda-dependencies
-install-agda-dependencies:
-ifndef AGDA_HOME
-	@echo "Please set installation path using AGDA_HOME:\n"
-	@echo "  AGDA_HOME=$HOME/agda make install-agda"
-else
-	cd $(AGDA_HOME) \
-		&& cabal v1-install --only-dependencies
-endif
-
-.PHONY: install-agda
-install-agda:
+$(CABAL_BIN)/agda: $(AGDA_HOME)/src
 ifndef AGDA_HOME
 	@echo "Please set installation path using AGDA_HOME:\n"
 	@echo "  AGDA_HOME=$HOME/agda make install-agda"
@@ -144,8 +133,23 @@ else
 			--ghc-options="+RTS -M4G -RTS"
 endif
 
+$(AGDA_LIBRARIES_FILE):
+	mkdir -p $(AGDA_DIR)
+	touch $(AGDA_LIBRARIES_FILE)
+
+$(AGDA_EXECUTABLES_FILE):
+	mkdir -p $(AGDA_DIR)
+	touch $(AGDA_EXECUTABLES_FILE)
+
+
+############################
+# Install Standard Library #
+############################
+
 .PHONY: install-agda-stdlib
-install-agda-stdlib: $(AGDA_LIBRARIES_FILE)
+install-agda-stdlib: $(AGDA_STDLIB_HOME)/src
+
+$(AGDA_STDLIB_HOME)/src: $(AGDA_LIBRARIES_FILE)
 ifndef AGDA_STDLIB_HOME
 	@echo "Please set installation path using AGDA_STDLIB_HOME:\n"
 	@echo "  AGDA_STDLIB_HOME=\$HOME/agda make install-agda-stdlib"
@@ -155,8 +159,7 @@ ifneq ($(dirname $(AGDA_STDLIB_HOME)),)
 		mkdir -p $(dirname $(AGDA_STDLIB_HOME)); fi
 endif
 ifdef AGDA_STDLIB_PR
-	if [ ! -d "$(AGDA_STDLIB_HOME)" ]; then \
-		git clone $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME); fi
+	git clone $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME)
 	cd $(AGDA_STDLIB_HOME) \
 		&& git fetch origin pull/$(AGDA_STDLIB_PR)/head:pull-$(AGDA_STDLIB_PR) \
 		&& git checkout pull-$(AGDA_STDLIB_PR)
@@ -170,25 +173,29 @@ ifeq (,$(findstring $(AGDA_STDLIB_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 endif
 endif
 
+
+####################
+# Install Agdarsec #
+####################
+
 .PHONY: install-agdarsec
-install-agdarsec: $(AGDA_LIBRARIES_FILE)
+install-agdarsec: $(AGDARSEC_HOME)/src
+
+$(AGDARSEC_HOME)/src: $(AGDA_LIBRARIES_FILE)
 ifndef AGDARSEC_HOME
 	@echo "Please set installation path using AGDARSEC_HOME:\n"
 	@echo "  AGDARSEC_HOME=\$HOME/agda make install-agdarsec"
 else
 ifneq ($(dirname $(AGDARSEC_HOME)),)
-	if [ ! -d "$(dirname $(AGDARSEC_HOME))" ]; then \
-		mkdir -p $(dirname $(AGDARSEC_HOME)); fi
+	mkdir -p $(dirname $(AGDARSEC_HOME))
 endif
 ifdef AGDARSEC_PR
-	if [ ! -d "$(AGDARSEC_HOME)" ]; then \
-		git clone $(AGDARSEC_REPO) $(AGDARSEC_HOME); fi
+	git clone $(AGDARSEC_REPO) $(AGDARSEC_HOME)
 	cd $(AGDARSEC_HOME) \
 		&& git fetch origin pull/$(AGDARSEC_PR)/head:pull-$(AGDARSEC_PR) \
 		&& git checkout pull-$(AGDARSEC_PR)
 else
-	if [ ! -d "$(AGDARSEC_HOME)" ]; then \
-		git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME); fi
+	git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME)
 	cd $(AGDARSEC_HOME) && git checkout $(AGDARSEC_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
@@ -196,8 +203,15 @@ ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 endif
 endif
 
+
+####################
+# Install Schmitty #
+####################
+
 .PHONY: install-schmitty
-install-schmitty: $(AGDA_LIBRARIES_FILE)
+install-schmitty: $(SCHMITTY_HOME)/src
+
+$(SCHMITTY_HOME)/src: $(AGDA_LIBRARIES_FILE)
 ifndef SCHMITTY_HOME
 	@echo "Please set installation path using SCHMITTY_HOME:\n"
 	@echo "  SCHMITTY_HOME=\$HOME/agda make install-schmitty"
@@ -207,14 +221,12 @@ ifneq ($(dirname $(SCHMITTY_HOME)),)
 		mkdir -p $(dirname $(SCHMITTY_HOME)); fi
 endif
 ifdef SCHMITTY_PR
-	if [ ! -d "$(SCHMITTY_HOME)" ]; then \
-		git clone $(SCHMITTY_REPO) $(SCHMITTY_HOME); fi
+	git clone $(SCHMITTY_REPO) $(SCHMITTY_HOME)
 	cd $(SCHMITTY_HOME) \
 		&& git fetch origin pull/$(SCHMITTY_PR)/head:pull-$(SCHMITTY_PR) \
 		&& git checkout pull-$(SCHMITTY_PR)
 else
-	if [ ! -d "$(SCHMITTY_HOME)" ]; then \
-		git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME); fi
+	git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME)
 	cd $(SCHMITTY_HOME) && git checkout $(SCHMITTY_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(SCHMITTY_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))

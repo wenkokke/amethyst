@@ -28,8 +28,6 @@ ENV PATH ${PATH}:${HOME}/.cabal/bin
 # Setup Agda
 ENV AGDA_HOME /agda
 RUN apt-get install -y zlib1g-dev libicu-dev
-RUN make install-agda-source
-RUN make install-agda-dependencies
 RUN make install-agda
 
 # Setup libraries
