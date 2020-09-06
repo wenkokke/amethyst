@@ -1,6 +1,10 @@
+language: haskell
+
 dist: focal
 
-language: haskell
+branches:
+  only:
+    - master
 
 cabal: "2.4"
 
@@ -30,7 +34,7 @@ install:
   - cabal v1-install alex happy
   - AGDA_HOME=$HOME/agda make install-agda-source
   - AGDA_HOME=$HOME/agda make install-agda-dependencies
-  - AGDA_HOME=$HOME/agda make install-agda
+  - AGDA_HOME=$HOME/agda travis_wait 60 make install-agda
   - AGDA_STDLIB_HOME=$HOME/agda-stdlib make install-agda-stdlib
   - AGDARSEC_HOME=$HOME/agdarsec make install-agdarsec
   - SCHMITTY_HOME=$HOME/schmitty make install-schmitty
