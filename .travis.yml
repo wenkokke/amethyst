@@ -12,10 +12,12 @@ addons:
   apt:
     packages:
       - z3
-      - zlib1g-dev
+      - libgmp-dev
       - libicu-dev
+      - zlib1g-dev
 
 cache:
+  timeout: 1500
   directories:
     - "$HOME/.cabal"
     - "$HOME/agda"
