@@ -77,9 +77,9 @@ Getting Started
 
 Amethyst requires Agda and several Agda libraries to work:
 
-- [agda][agda] (>= 2.6.2-20eb4f)
-- [agda-stdlib][agda-stdlib] (experimental)
-- [agdarsec][agdarsec] (latest)
+- [agda][agda] ([PR #4885][agda-pr-4885])
+- [agda-stdlib][agda-stdlib] ([PR #1285][agda-stdlib-pr-1285])
+- [agdarsec][agdarsec] ([PR #17][agdarsec-pr-17)
 - [schmitty][schmitty] (latest)
 
 Furthermore, Amethyst requires you to install any external solver you’d like to
@@ -100,9 +100,7 @@ and the external solvers in `.agda/executables`:
 /path/to/marabou
 ```
 
-We realise this is quite a lot, and to make matters worse, Amethyst and many of
-its dependencies are under active development. To make matters easier, we
-provide a [Dockerfile](Dockerfile)!
+We realise this is quite a lot! Unfortunately, Amethyst required the revision of the floating-point primitives in Agda, which explains why it requires patches to its dependencies. The dependencies will stabilise a bit with the release of Agda v2.6.2. To make matters easier, for now, we provide a [Dockerfile](Dockerfile)!
 
 Related Work
 =================================================================================
@@ -125,9 +123,12 @@ using the Z3 API.
 [Sapphire]: https://github.com/wenkokke/sapphire
 [StarChild]: https://github.com/wenkokke/starchild
 [AND-Gate-2-Sigmoid-1]: https://wenkokke.github.io/amethyst/AND-Gate-2-Sigmoid-1.html
-[agda]: https://github.com/agda/agda/commit/20eb4f
-[agda-stdlib]: https://github.com/agda/agda-stdlib/tree/experimental
+[agda]: https://github.com/agda/agda
+[agda-pr-4885]: https://github.com/agda/agda/pull/4885
+[agda-stdlib]: https://github.com/agda/agda-stdlib
+[agda-stdlib-pr-1285]: https://github.com/agda/agda-stdlib/pull/1285
 [agdarsec]: https://github.com/gallais/agdarsec
+[agdarsec-pr-17]: https://github.com/gallais/agdarsec/pull/17
 [schmitty]: https://github.com/wenkokke/schmitty
 [Z3]: https://github.com/Z3Prover/z3
 [CVC4]: https://github.com/CVC4/CVC4

@@ -32,16 +32,9 @@ RUN make install-agda-source
 RUN make install-agda-dependencies
 RUN make install-agda
 
-# Setup agda-stdlib
-ENV AGDA_STDLIB_HOME /agda-stdlib
+# Setup libraries
 RUN make install-agda-stdlib
-
-# Setup agdarsec
-ENV AGDARSEC_HOME /agdarsec
 RUN make install-agdarsec
-
-# Setup schmitty
-ENV SCHMITTY_HOME /schmitty
 RUN make install-schmitty
 
 # Test amethyst
