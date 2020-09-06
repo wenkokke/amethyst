@@ -95,14 +95,10 @@ SCHMITTY_COMMIT_HASH ?= HEAD
 .PHONY: install-agda
 install-agda: $(CABAL_BIN)/agda
 
-$(CABAL_BIN)/agda: $(AGDA_HOME)/src
-ifndef AGDA_HOME
-	@echo "Please set installation path using AGDA_HOME:\n"
-	@echo "  AGDA_HOME=$HOME/agda make install-agda"
-else
+$(AGDA_HOME)/src: $(AGDA_LIBRARIES_FILE)
 	mkdir -p $(AGDA_HOME)
-	cd $(AGDA_HOME) \
-		&& git init \
+	cd $(AGDA_HOME)
+		&& git init
 		&& git remote add origin $(AGDA_REPO)
 ifdef AGDA_PR
 	cd $(AGDA_HOME) \
@@ -114,13 +110,15 @@ else
 		&& git checkout $(AGDA_COMMIT_HASH)
 endif
 	cd $(AGDA_HOME) \
-		&& git submodule update --init src/fix-whitespace \
+		&& git submodule update --init src/fix-whitespace
+
+$(CABAL_BIN)/agda: $(AGDA_HOME)/src
+	cd $(AGDA_HOME) \
 		&& cabal v1-install \
 			--disable-documentation \
 			--disable-library-profiling \
 			-fenable-cluster-counting \
 			--ghc-options="+RTS -M4G -RTS"
-endif
 
 $(AGDA_LIBRARIES_FILE):
 	mkdir -p $(AGDA_DIR)
