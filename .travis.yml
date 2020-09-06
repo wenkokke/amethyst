@@ -38,10 +38,6 @@ install:
   - AGDA_STDLIB_HOME=$HOME/agda-stdlib make install-agda-stdlib
   - AGDARSEC_HOME=$HOME/agdarsec make install-agdarsec
   - SCHMITTY_HOME=$HOME/schmitty make install-schmitty
-  - ghc --version
-  - cabal --version
-  - agda --version
-  - z3 --version
 
 script:
   - AGDA=$HOME/.cabal/bin/agda make test
