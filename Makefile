@@ -158,9 +158,9 @@ ifdef AGDA_STDLIB_PR
 else
 	git clone --single-branch --branch $(AGDA_STDLIB_BRANCH) $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME)
 	cd $(AGDA_STDLIB_HOME) && git checkout $(AGDA_STDLIB_COMMIT_HASH)
+endif
 ifeq (,$(findstring $(AGDA_STDLIB_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDA_STDLIB_HOME)/standard-library.agda-lib >> $(AGDA_LIBRARIES_FILE)
-endif
 endif
 endif
 
@@ -181,9 +181,9 @@ ifdef AGDARSEC_PR
 else
 	git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME)
 	cd $(AGDARSEC_HOME) && git checkout $(AGDARSEC_COMMIT_HASH)
+endif
 ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDARSEC_HOME)/agdarsec.agda-lib >> $(AGDA_LIBRARIES_FILE)
-endif
 endif
 endif
 
@@ -204,9 +204,9 @@ ifdef SCHMITTY_PR
 else
 	git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME)
 	cd $(SCHMITTY_HOME) && git checkout $(SCHMITTY_COMMIT_HASH)
+endif
 ifeq (,$(findstring $(SCHMITTY_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(SCHMITTY_HOME)/schmitty.agda-lib >> $(AGDA_LIBRARIES_FILE)
-endif
 endif
 endif
 
