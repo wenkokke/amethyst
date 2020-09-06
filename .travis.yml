@@ -38,6 +38,7 @@ install:
   - AGDA_STDLIB_HOME=$HOME/agda-stdlib make install-agda-stdlib
   - AGDARSEC_HOME=$HOME/agdarsec make install-agdarsec
   - SCHMITTY_HOME=$HOME/schmitty make install-schmitty
+  - make register-z3
 
 script:
   - AGDA=$HOME/.cabal/bin/agda make test
