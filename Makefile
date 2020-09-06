@@ -101,15 +101,18 @@ ifndef AGDA_HOME
 	@echo "  AGDA_HOME=$HOME/agda make install-agda"
 else
 ifneq ($(dirname $(AGDA_HOME)),)
-	if [ ! -d "$(dirname $(AGDA_HOME))" ]; then mkdir -p $(dirname $(AGDA_HOME)); fi
+	if [ ! -d "$(dirname $(AGDA_HOME))" ]; \
+		then mkdir -p $(dirname $(AGDA_HOME)); fi
 endif
 ifdef AGDA_PR
-	git clone $(AGDA_REPO) $(AGDA_HOME)
+	if [ ! -d "$(AGDA_HOME)" ]; then \
+		git clone $(AGDA_REPO) $(AGDA_HOME); fi
 	cd $(AGDA_HOME) \
 		&& git fetch origin pull/$(AGDA_PR)/head:pull-$(AGDA_PR) \
 		&& git checkout pull-$(AGDA_PR)
 else
-	git clone --single-branch --branch $(AGDA_BRANCH) $(AGDA_REPO) $(AGDA_HOME)
+	if [ ! -d "$(AGDA_HOME)" ]; then \
+		git clone --single-branch --branch $(AGDA_BRANCH) $(AGDA_REPO) $(AGDA_HOME); fi
 	cd $(AGDA_HOME) \
 		&& git checkout $(AGDA_COMMIT_HASH)
 endif
@@ -148,15 +151,18 @@ ifndef AGDA_STDLIB_HOME
 	@echo "  AGDA_STDLIB_HOME=\$HOME/agda make install-agda-stdlib"
 else
 ifneq ($(dirname $(AGDA_STDLIB_HOME)),)
-	if [ ! -d "$(dirname $(AGDA_STDLIB_HOME))" ]; then mkdir -p $(dirname $(AGDA_STDLIB_HOME)); fi
+	if [ ! -d "$(dirname $(AGDA_STDLIB_HOME))" ]; then \
+		mkdir -p $(dirname $(AGDA_STDLIB_HOME)); fi
 endif
 ifdef AGDA_STDLIB_PR
-	git clone $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME)
+	if [ ! -d "$(AGDA_STDLIB_HOME)" ]; then \
+		git clone $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME); fi
 	cd $(AGDA_STDLIB_HOME) \
 		&& git fetch origin pull/$(AGDA_STDLIB_PR)/head:pull-$(AGDA_STDLIB_PR) \
 		&& git checkout pull-$(AGDA_STDLIB_PR)
 else
-	git clone --single-branch --branch $(AGDA_STDLIB_BRANCH) $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME)
+	if [ ! -d "$(AGDA_STDLIB_HOME)" ]; then \
+		git clone --single-branch --branch $(AGDA_STDLIB_BRANCH) $(AGDA_STDLIB_REPO) $(AGDA_STDLIB_HOME); fi
 	cd $(AGDA_STDLIB_HOME) && git checkout $(AGDA_STDLIB_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(AGDA_STDLIB_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
@@ -171,15 +177,18 @@ ifndef AGDARSEC_HOME
 	@echo "  AGDARSEC_HOME=\$HOME/agda make install-agdarsec"
 else
 ifneq ($(dirname $(AGDARSEC_HOME)),)
-	if [ ! -d "$(dirname $(AGDARSEC_HOME))" ]; then mkdir -p $(dirname $(AGDARSEC_HOME)); fi
+	if [ ! -d "$(dirname $(AGDARSEC_HOME))" ]; then \
+		mkdir -p $(dirname $(AGDARSEC_HOME)); fi
 endif
 ifdef AGDARSEC_PR
-	git clone $(AGDARSEC_REPO) $(AGDARSEC_HOME)
+	if [ ! -d "$(AGDARSEC_HOME)" ]; then \
+		git clone $(AGDARSEC_REPO) $(AGDARSEC_HOME); fi
 	cd $(AGDARSEC_HOME) \
 		&& git fetch origin pull/$(AGDARSEC_PR)/head:pull-$(AGDARSEC_PR) \
 		&& git checkout pull-$(AGDARSEC_PR)
 else
-	git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME)
+	if [ ! -d "$(AGDARSEC_HOME)" ]; then \
+		git clone --single-branch --branch $(AGDARSEC_BRANCH) $(AGDARSEC_REPO) $(AGDARSEC_HOME); fi
 	cd $(AGDARSEC_HOME) && git checkout $(AGDARSEC_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
@@ -194,15 +203,18 @@ ifndef SCHMITTY_HOME
 	@echo "  SCHMITTY_HOME=\$HOME/agda make install-schmitty"
 else
 ifneq ($(dirname $(SCHMITTY_HOME)),)
-	if [ ! -d "$(dirname $(SCHMITTY_HOME))" ]; then mkdir -p $(dirname $(SCHMITTY_HOME)); fi
+	if [ ! -d "$(dirname $(SCHMITTY_HOME))" ]; then \
+		mkdir -p $(dirname $(SCHMITTY_HOME)); fi
 endif
 ifdef SCHMITTY_PR
-	git clone $(SCHMITTY_REPO) $(SCHMITTY_HOME)
+	if [ ! -d "$(SCHMITTY_HOME)" ]; then \
+		git clone $(SCHMITTY_REPO) $(SCHMITTY_HOME); fi
 	cd $(SCHMITTY_HOME) \
 		&& git fetch origin pull/$(SCHMITTY_PR)/head:pull-$(SCHMITTY_PR) \
 		&& git checkout pull-$(SCHMITTY_PR)
 else
-	git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME)
+	if [ ! -d "$(SCHMITTY_HOME)" ]; then \
+		git clone --single-branch --branch $(SCHMITTY_BRANCH) $(SCHMITTY_REPO) $(SCHMITTY_HOME); fi
 	cd $(SCHMITTY_HOME) && git checkout $(SCHMITTY_COMMIT_HASH)
 endif
 ifeq (,$(findstring $(SCHMITTY_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
