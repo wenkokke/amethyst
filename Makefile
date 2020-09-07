@@ -64,6 +64,7 @@ AGDA_DIR ?= $(HOME)/.agda
 AGDA_LIBRARIES_FILE := $(AGDA_DIR)/libraries
 AGDA_EXECUTABLES_FILE := $(AGDA_DIR)/executables
 
+AGDA_HOME ?= $(AGDA_DIR)/agda
 AGDA_REPO ?= https://github.com/agda/agda
 AGDA_PR ?= 4885
 AGDA_BRANCH ?= master
