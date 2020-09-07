@@ -56,6 +56,18 @@ index.agda: $(AGDA_FILES)
 	@echo $(INDEX_AGDA) > index.agda
 
 
+#########################
+# Generate Docker Image #
+#########################
+
+.PHONY: docker-image
+docker-image: amethyst.tar
+
+amethyst.tar: Dockerfile $(AGDA_FILES)
+	docker build --tag amethyst:latest .
+	docker save -o amethyst.tar amethyst:latest
+
+
 ########################
 # Install Dependencies #
 ########################
