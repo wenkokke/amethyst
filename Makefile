@@ -93,7 +93,7 @@ SCHMITTY_COMMIT_HASH ?= HEAD
 ################
 
 .PHONY: install-agda
-install-agda: $(CABAL_BIN)/bin/agda
+install-agda: $(CABAL_DIR)/bin/agda
 
 $(AGDA_HOME)/src: $(AGDA_LIBRARIES_FILE)
 	mkdir -p $(AGDA_HOME)
