@@ -158,7 +158,7 @@ $(AGDA_EXECUTABLES_FILE):
 ############################
 
 .PHONY: install-agda-stdlib
-install-agda-stdlib: $(AGDA_STDLIB_HOME)/src
+install-agda-stdlib: $(AGDA_STDLIB_LOCK)
 
 .PHONY: uninstall-agda-stdlib
 uninstall-agda-stdlib:
@@ -190,7 +190,7 @@ endif
 ####################
 
 .PHONY: install-agdarsec
-install-agdarsec: $(AGDARSEC_HOME)/src
+install-agdarsec: $(AGDARSEC_LOCK)
 
 .PHONY: uninstall-agdarsec
 uninstall-agdarsec:
@@ -222,7 +222,7 @@ endif
 ####################
 
 .PHONY: install-schmitty
-install-schmitty: $(SCHMITTY_HOME)/src
+install-schmitty: $(SCHMITTY_LOCK)
 
 .PHONY: uninstall-schmitty
 uninstall-schmitty:
