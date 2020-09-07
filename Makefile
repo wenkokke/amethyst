@@ -68,7 +68,7 @@ AGDA_REPO ?= https://github.com/agda/agda
 AGDA_PR ?= 4885
 AGDA_BRANCH ?= master
 AGDA_COMMIT_HASH ?= HEAD
-CABAL_BIN ?= $(HOME)/.cabal/bin
+CABAL_DIR ?= $(HOME)/.cabal
 
 AGDA_STDLIB_HOME ?= $(AGDA_DIR)/standard-library
 AGDA_STDLIB_REPO ?= https://github.com/agda/agda-stdlib
@@ -93,7 +93,7 @@ SCHMITTY_COMMIT_HASH ?= HEAD
 ################
 
 .PHONY: install-agda
-install-agda: $(CABAL_BIN)/agda
+install-agda: $(CABAL_BIN)/bin/agda
 
 $(AGDA_HOME)/src: $(AGDA_LIBRARIES_FILE)
 	mkdir -p $(AGDA_HOME)
@@ -112,7 +112,7 @@ endif
 	cd $(AGDA_HOME) \
 		&& git submodule update --init src/fix-whitespace
 
-$(CABAL_BIN)/agda: $(AGDA_HOME)/src
+$(CABAL_DIR)/bin/agda: $(AGDA_HOME)/src
 	cd $(AGDA_HOME) \
 		&& cabal v1-install \
 			--disable-documentation \
