@@ -67,25 +67,25 @@ AGDA_EXECUTABLES_FILE := $(AGDA_DIR)/executables
 AGDA_REPO ?= https://github.com/agda/agda
 AGDA_PR ?= 4885
 AGDA_BRANCH ?= master
-AGDA_COMMIT_HASH ?= HEAD
+AGDA_COMMIT_HASH ?= FETCH_HEAD
 CABAL_DIR ?= $(HOME)/.cabal
 
 AGDA_STDLIB_HOME ?= $(AGDA_DIR)/standard-library
 AGDA_STDLIB_REPO ?= https://github.com/agda/agda-stdlib
 AGDA_STDLIB_PR ?= 1285
 AGDA_STDLIB_BRANCH ?= experimental
-AGDA_STDLIB_COMMIT_HASH ?= HEAD
+AGDA_STDLIB_COMMIT_HASH ?= FETCH_HEAD
 
 AGDARSEC_HOME ?= $(AGDA_DIR)/agdarsec
 AGDARSEC_REPO ?= https://github.com/gallais/agdarsec
 AGDARSEC_PR ?= 17
 AGDARSEC_BRANCH ?= master
-AGDARSEC_COMMIT_HASH ?= HEAD
+AGDARSEC_COMMIT_HASH ?= FETCH_HEAD
 
 SCHMITTY_HOME ?= $(AGDA_DIR)/schmitty
 SCHMITTY_REPO ?= https://github.com/wenkokke/schmitty
 SCHMITTY_BRANCH ?= master
-SCHMITTY_COMMIT_HASH ?= HEAD
+SCHMITTY_COMMIT_HASH ?= FETCH_HEAD
 
 
 ################
