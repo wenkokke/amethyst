@@ -1,6 +1,12 @@
 Amethyst: Neural Network Verification in Agda
 ---------------------------------------------------------------------------------
 
+[![Build Status](https://travis-ci.org/wenkokke/amethyst.svg?branch=master)](https://travis-ci.org/wenkokke/amethyst)
+[![Agda][agda-version]][agda]
+[![agda-stdlib][agda-stdlib-version]][agda-stdlib]
+[![agdarsec][agdarsec-version]][agdarsec]
+[![schmitty][schmitty-version]][schmitty]
+
 What is Amethyst?
 =================================================================================
 
@@ -77,10 +83,10 @@ Getting Started
 
 Amethyst requires Agda and several Agda libraries to work:
 
-- [agda][agda] ([PR #4885][agda-pr-4885])
-- [agda-stdlib][agda-stdlib] ([PR #1285][agda-stdlib-pr-1285])
-- [agdarsec][agdarsec] ([PR #17][agdarsec-pr-17)
-- [schmitty][schmitty] (latest)
+- agda ([PR #4885][agda])
+- agda-stdlib ([PR #1285][agda-stdlib])
+- agdarsec ([PR #17][agdarsec)
+- schmitty ([latest][schmitty])
 
 Furthermore, Amethyst requires you to install any external solver you’d like to
 use, e.g., [Z3][Z3], [CVC4][CVC4], [Marabou][Marabou], etc…
@@ -123,12 +129,13 @@ using the Z3 API.
 [Sapphire]: https://github.com/wenkokke/sapphire
 [StarChild]: https://github.com/wenkokke/starchild
 [AND-Gate-2-Sigmoid-1]: https://wenkokke.github.io/amethyst/AND-Gate-2-Sigmoid-1.html
-[agda]: https://github.com/agda/agda
-[agda-pr-4885]: https://github.com/agda/agda/pull/4885
-[agda-stdlib]: https://github.com/agda/agda-stdlib
-[agda-stdlib-pr-1285]: https://github.com/agda/agda-stdlib/pull/1285
-[agdarsec]: https://github.com/gallais/agdarsec
-[agdarsec-pr-17]: https://github.com/gallais/agdarsec/pull/17
+[agda]: https://github.com/agda/agda/pull/4885
+[agda-version]: https://img.shields.io/badge/Agda-PR%20%234885-blue
+[agda-stdlib]: https://github.com/agda/agda-stdlib/pull/1285
+[agda-stdlib-version]: https://img.shields.io/badge/agda-stdlib-PR%20%231285-blue
+[agdarsec]: https://github.com/gallais/agdarsec/pull/17
+[agdarsec-version]: https://img.shields.io/badge/agdarsec-PR%20%2317-blue
 [schmitty]: https://github.com/wenkokke/schmitty
+[schmitty-version]: https://img.shields.io/badge/schmitty-latest-blue
 [Z3]: https://github.com/Z3Prover/z3
 [CVC4]: https://github.com/CVC4/CVC4
