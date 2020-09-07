@@ -98,7 +98,7 @@ install-agda: $(CABAL_BIN)/agda
 $(AGDA_HOME)/src: $(AGDA_LIBRARIES_FILE)
 	mkdir -p $(AGDA_HOME)
 	cd $(AGDA_HOME)
-		&& git init
+		&& git init \
 		&& git remote add origin $(AGDA_REPO)
 ifdef AGDA_PR
 	cd $(AGDA_HOME) \
