@@ -60,6 +60,8 @@ index.agda: $(AGDA_FILES)
 # Install Dependencies #
 ########################
 
+CABAL_DIR ?= $(HOME)/.cabal
+
 AGDA_DIR ?= $(HOME)/.agda
 AGDA_LIBRARIES_FILE := $(AGDA_DIR)/libraries
 AGDA_EXECUTABLES_FILE := $(AGDA_DIR)/executables
@@ -69,24 +71,43 @@ AGDA_REPO ?= https://github.com/agda/agda
 AGDA_PR ?= 4885
 AGDA_BRANCH ?= master
 AGDA_COMMIT_HASH ?= FETCH_HEAD
-CABAL_DIR ?= $(HOME)/.cabal
+ifdef AGDA_PR
+AGDA_LOCK := $(AGDA_HOME)/pr-$(AGDA_PR).lock
+else
+AGDA_LOCK := $(AGDA_HOME)/$(AGDA_BRANCH)-$(AGDA_COMMIT_HASH).lock
+endif
 
 AGDA_STDLIB_HOME ?= $(AGDA_DIR)/standard-library
 AGDA_STDLIB_REPO ?= https://github.com/agda/agda-stdlib
 AGDA_STDLIB_PR ?= 1285
 AGDA_STDLIB_BRANCH ?= experimental
 AGDA_STDLIB_COMMIT_HASH ?= FETCH_HEAD
+ifdef AGDA_STDLIB_PR
+AGDA_STDLIB_LOCK := $(AGDA_STDLIB_HOME)/pr-$(AGDA_STDLIB_PR).lock
+else
+AGDA_STDLIB_LOCK := $(AGDA_STDLIB_HOME)/$(AGDA_STDLIB_BRANCH)-$(AGDA_STDLIB_COMMIT_HASH).lock
+endif
 
 AGDARSEC_HOME ?= $(AGDA_DIR)/agdarsec
 AGDARSEC_REPO ?= https://github.com/gallais/agdarsec
 AGDARSEC_PR ?= 17
 AGDARSEC_BRANCH ?= master
 AGDARSEC_COMMIT_HASH ?= FETCH_HEAD
+ifdef AGDARSEC_PR
+AGDARSEC_LOCK := $(AGDARSEC_HOME)/pr-$(AGDARSEC_PR).lock
+else
+AGDARSEC_LOCK := $(AGDARSEC_HOME)/$(AGDARSEC_BRANCH)-$(AGDARSEC_COMMIT_HASH).lock
+endif
 
 SCHMITTY_HOME ?= $(AGDA_DIR)/schmitty
 SCHMITTY_REPO ?= https://github.com/wenkokke/schmitty
 SCHMITTY_BRANCH ?= master
 SCHMITTY_COMMIT_HASH ?= FETCH_HEAD
+ifdef SCHMITTY_PR
+SCHMITTY_LOCK := $(SCHMITTY_HOME)/pr-$(SCHMITTY_PR).lock
+else
+SCHMITTY_LOCK := $(SCHMITTY_HOME)/$(SCHMITTY_BRANCH)-$(SCHMITTY_COMMIT_HASH).lock
+endif
 
 
 ################
@@ -96,7 +117,8 @@ SCHMITTY_COMMIT_HASH ?= FETCH_HEAD
 .PHONY: install-agda
 install-agda: $(CABAL_DIR)/bin/agda
 
-$(AGDA_HOME)/src: $(AGDA_LIBRARIES_FILE)
+$(AGDA_LOCK): $(AGDA_LIBRARIES_FILE)
+	rm -rf $(AGDA_HOME)
 	mkdir -p $(AGDA_HOME)
 	cd $(AGDA_HOME) \
 		&& git init \
@@ -112,8 +134,9 @@ else
 endif
 	cd $(AGDA_HOME) \
 		&& git submodule update --init src/fix-whitespace
+	touch $(AGDA_LOCK)
 
-$(CABAL_DIR)/bin/agda: $(AGDA_HOME)/src
+$(CABAL_DIR)/bin/agda: $(AGDA_LOCK)
 	cd $(AGDA_HOME) \
 		&& cabal v1-install \
 			--disable-documentation \
@@ -137,7 +160,12 @@ $(AGDA_EXECUTABLES_FILE):
 .PHONY: install-agda-stdlib
 install-agda-stdlib: $(AGDA_STDLIB_HOME)/src
 
-$(AGDA_STDLIB_HOME)/src: $(AGDA_LIBRARIES_FILE)
+.PHONY: uninstall-agda-stdlib
+uninstall-agda-stdlib:
+	rm -rf $(AGDA_STDLIB_HOME)
+
+$(AGDA_STDLIB_LOCK): $(AGDA_LIBRARIES_FILE)
+	rm -rf $(AGDA_STDLIB_HOME)
 	mkdir -p $(AGDA_STDLIB_HOME)
 	cd $(AGDA_STDLIB_HOME) \
 		&& git init \
@@ -154,6 +182,7 @@ endif
 ifeq (,$(findstring $(AGDA_STDLIB_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDA_STDLIB_HOME)/standard-library.agda-lib >> $(AGDA_LIBRARIES_FILE)
 endif
+	touch $(AGDA_STDLIB_LOCK)
 
 
 ####################
@@ -163,7 +192,12 @@ endif
 .PHONY: install-agdarsec
 install-agdarsec: $(AGDARSEC_HOME)/src
 
-$(AGDARSEC_HOME)/src: $(AGDA_LIBRARIES_FILE)
+.PHONY: uninstall-agdarsec
+uninstall-agdarsec:
+	rm -rf $(AGDARSEC_HOME)
+
+$(AGDARSEC_LOCK): $(AGDA_LIBRARIES_FILE)
+	rm -rf $(AGDARSEC_HOME)
 	mkdir -p $(AGDARSEC_HOME)
 	cd $(AGDARSEC_HOME) \
 		&& git init \
@@ -180,6 +214,7 @@ endif
 ifeq (,$(findstring $(AGDARSEC_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(AGDARSEC_HOME)/agdarsec.agda-lib >> $(AGDA_LIBRARIES_FILE)
 endif
+	touch $(AGDARSEC_LOCK)
 
 
 ####################
@@ -189,7 +224,12 @@ endif
 .PHONY: install-schmitty
 install-schmitty: $(SCHMITTY_HOME)/src
 
-$(SCHMITTY_HOME)/src: $(AGDA_LIBRARIES_FILE)
+.PHONY: uninstall-schmitty
+uninstall-schmitty:
+	rm -rf $(SCHMITTY_HOME)
+
+$(SCHMITTY_LOCK): $(AGDA_LIBRARIES_FILE)
+	rm -rf $(SCHMITTY_HOME)
 	mkdir -p $(SCHMITTY_HOME)
 	cd $(SCHMITTY_HOME) \
 		&& git init \
@@ -206,6 +246,7 @@ endif
 ifeq (,$(findstring $(SCHMITTY_HOME),$(shell cat $(AGDA_LIBRARIES_FILE))))
 	@echo $(SCHMITTY_HOME)/schmitty.agda-lib >> $(AGDA_LIBRARIES_FILE)
 endif
+	touch $(SCHMITTY_LOCK)
 
 
 ########################
