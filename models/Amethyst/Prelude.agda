@@ -20,8 +20,8 @@ open import Amethyst.LinearAlgebra.As.Schmitty public
 open import Data.List as List public using (List; []; _∷_; _++_)
 open import Data.Vec as Vec public using (Vec; []; _∷_; [_])
 open import SMT.Theories.Reals as Reals
-open import SMT.Backend.Z3 Reals.theory public using (z3)
-open import SMT.Backend.CVC4 Reals.theory public using (cvc4)
+open import SMT.Backend.Z3 Reals.reflectable public using (z3)
+open import SMT.Backend.CVC4 Reals.reflectable public using (cvc4)
 
 private
   variable

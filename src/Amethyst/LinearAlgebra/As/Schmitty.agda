@@ -33,7 +33,7 @@ open import Data.Vec as Vec using (Vec; []; _∷_)
 open import Function using (_∘_; id)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import SMT.Theories.Reals as Reals public
-open import SMT.Script Reals.theory public
+open import SMT.Script Reals.reflectable public
 
 -- * Linear algebra
 
