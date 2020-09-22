@@ -17,6 +17,8 @@
 --------------------------------------------------------------------------------
 module Amethyst.Network.As.Schmitty where
 
+open import SMT.Theories.Core.Base using (CoreIdentifier)
+
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
 open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Schmitty
@@ -25,6 +27,7 @@ open import Data.Bool as Bool using (Bool; false; true)
 open import Data.Fin as Fin using (Fin; zero; suc)
 open import Data.Float as Float using (Float)
 open import Data.List as List using (List; []; _∷_; _++_; _ʳ++_)
+open import Data.List.Relation.Unary.All using ([])
 import Data.List.Properties as List
 open import Data.Nat as Nat using (ℕ; zero; suc)
 open import Data.Product as Prod using (_×_; _,_; uncurry)
@@ -142,7 +145,7 @@ withReflectedNetworkAsScript {inputs} {outputs} n k
     $ assert
       (Vec.foldr _
         (app₂ and)
-        (lit (bool true))
+        (app (core CoreIdentifier.true) [])
         (Vec.zipWith
           (app₂ eq)
           (Eq.subst (λ Γ → Vec (Real Γ) outputs) (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs))) ov)
