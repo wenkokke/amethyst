@@ -136,7 +136,7 @@ withReflectedNetworkAsScript
   → ( (iv : Vec (Real (Reals inputs ++ Reals outputs)) inputs)
     → (ov : Vec (Real (Reals inputs ++ Reals outputs)) outputs)
     → (Script (Reals inputs ++ Reals outputs) Γ Ξ))
-    → Script [] Γ Ξ
+  → Script [] Γ Ξ
 withReflectedNetworkAsScript {inputs} {outputs} n k
   = ( Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals inputs) (Reals outputs))
     $ declare-consts (List.reverse (Reals outputs))
