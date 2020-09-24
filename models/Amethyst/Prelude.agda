@@ -80,15 +80,15 @@ infix 8 ¬_
 ¬_ : Op₁ (Term Γ BOOL)
 ¬_ = app₁ not
 
-infix 7 _-_
+infix 17 _-_
 _-_ : Op₂ (Term Γ REAL)
 _-_ = app₂ sub
 
-infix 4 _==_
+infix 14 _==_
 _==_ : (x y : Real Γ) → Term Γ BOOL
 _==_ = app₂ eq
 
-infix 4 _≤_
+infix 14 _≤_
 _≤_ : (x y : Real Γ) → Term Γ BOOL
 _≤_ = app₂ leq
 
