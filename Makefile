@@ -80,7 +80,7 @@ AGDA_EXECUTABLES_FILE := $(AGDA_DIR)/executables
 
 AGDA_HOME ?= $(AGDA_DIR)/agda
 AGDA_REPO ?= https://github.com/agda/agda
-AGDA_PR ?= 4885
+AGDA_PR ?=
 AGDA_BRANCH ?= master
 AGDA_COMMIT_HASH ?= FETCH_HEAD
 ifdef AGDA_PR
@@ -91,7 +91,7 @@ endif
 
 AGDA_STDLIB_HOME ?= $(AGDA_DIR)/standard-library
 AGDA_STDLIB_REPO ?= https://github.com/agda/agda-stdlib
-AGDA_STDLIB_PR ?= 1285
+AGDA_STDLIB_PR ?=
 AGDA_STDLIB_BRANCH ?= experimental
 AGDA_STDLIB_COMMIT_HASH ?= FETCH_HEAD
 ifdef AGDA_STDLIB_PR
@@ -102,7 +102,7 @@ endif
 
 AGDARSEC_HOME ?= $(AGDA_DIR)/agdarsec
 AGDARSEC_REPO ?= https://github.com/gallais/agdarsec
-AGDARSEC_PR ?= 17
+AGDARSEC_PR ?=
 AGDARSEC_BRANCH ?= master
 AGDARSEC_COMMIT_HASH ?= FETCH_HEAD
 ifdef AGDARSEC_PR
@@ -114,6 +114,7 @@ endif
 SCHMITTY_HOME ?= $(AGDA_DIR)/schmitty
 SCHMITTY_REPO ?= https://github.com/wenkokke/schmitty
 SCHMITTY_BRANCH ?= master
+SCHMITTY_PR ?=
 SCHMITTY_COMMIT_HASH ?= FETCH_HEAD
 ifdef SCHMITTY_PR
 SCHMITTY_LOCK := $(SCHMITTY_HOME)/pr-$(SCHMITTY_PR).lock

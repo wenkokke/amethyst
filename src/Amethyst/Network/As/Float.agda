@@ -14,7 +14,10 @@
 module Amethyst.Network.As.Float where
 
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Approximation
 open import Amethyst.LinearAlgebra.As.Float
+open import Amethyst.PiecewiseLinear.Base
+open import Amethyst.PiecewiseLinear.As.Float
 open import Data.Bool as Bool using (if_then_else_)
 open import Data.Float as Float using (Float; _≤ᵇ_; _+_; _-_; _*_; _÷_; -_; e^_; tanh)
 open import Data.Nat as Nat using (ℕ)
@@ -32,11 +35,10 @@ private
   relu x = if x ≤ᵇ 0.0 then 0.0 else x
 
   sigmoid : Float → Float
-  sigmoid x = 1.0 ÷ (1.0 + e^ - x)
+  sigmoid x = eval sigmoidApprox x
 
   softmax : Vec Float n → Vec Float n
-  softmax xs = normalise (Vec.map e^_ xs)
-
+  softmax xs = normalise (Vec.map (eval expApprox) xs)
 
 -- * Neural networks
 
