@@ -20,9 +20,11 @@ module Amethyst.Network.As.Schmitty where
 open import SMT.Theories.Reals.Base using (true)
 
 open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Approximation
 open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Schmitty
 open import Amethyst.LinearAlgebra.As.Schmitty
+
 open import Data.Fin as Fin using (Fin; zero; suc)
 open import Data.Float as Float using (Float)
 open import Data.List as List using (List; []; _∷_; _++_; _ʳ++_)
@@ -47,16 +49,16 @@ private
   relu x = app₃ ite (app₂ leq x (lit (nat 0))) (lit (nat 0)) x
 
   lexp : Real Γ → Real Γ
-  lexp = reflectExtrap (linearise Float.e^_ -4.0 4.0 15)
+  lexp = reflect expApprox
 
   lsigmoid : Real Γ → Real Γ
-  lsigmoid x = app₂ div (toReal 1.0) (app₂ add (toReal 1.0) (lexp (app₁ neg x)))
+  lsigmoid = reflect sigmoidApprox
 
   lsoftmax : Vec (Real Γ) n → Vec (Real Γ) n
   lsoftmax xs = normalise (Vec.map lexp xs)
 
   ltanh : Real Γ → Real Γ
-  ltanh = reflectExtrap (linearise Float.tanh -3.0 3.0 3)
+  ltanh = reflect tanhApprox
 
 -- |Convert activation functions to SMT terms.
 --

@@ -50,19 +50,19 @@ query : ∀ {inputs outputs layers} (let Γ = Reals inputs ++ Reals outputs)
 query n c = withReflectedNetworkAsScript n
   (λ iv ov → processConstraints (c iv ov) ∷ check-sat ∷ [])
 
+queryWithModel : ∀ {inputs outputs layers} (let Γ = Reals inputs ++ Reals outputs)
+  → Network Float inputs outputs layers
+  → NetworkConstraints inputs outputs
+  → Script [] Γ (MODEL Γ ∷  [])
+queryWithModel n c = withReflectedNetworkAsScript n
+  (λ iv ov → processConstraints (c iv ov) ∷ get-model ∷ [])
+
 --------------------------------------------------------------------------------
--- Constants
+-- Boolean operators
 
 private
   variable
     Γ : Ctxt
-
-0·0f 1·0f : Real Γ
-0·0f = lit (float 0.0)
-1·0f = lit (float 1.0)
-
---------------------------------------------------------------------------------
--- Operators
 
 infixr 3 _⇒_
 _⇒_ : Op₂ (Term Γ BOOL)
@@ -80,9 +80,22 @@ infix 8 ¬_
 ¬_ : Op₁ (Term Γ BOOL)
 ¬_ = app₁ not
 
+--------------------------------------------------------------------------------
+-- Float constants
+
+0·0f 1·0f : Real Γ
+0·0f = lit (float 0.0)
+1·0f = lit (float 1.0)
+
+--------------------------------------------------------------------------------
+-- Float operators and relations
+
 infix 17 _-_
 _-_ : Op₂ (Term Γ REAL)
 _-_ = app₂ sub
+
+∣_∣ : Op₁ (Term Γ REAL)
+∣ x ∣ = app₃ ite (app₂ leq x 0·0f) (app₁ neg x) x
 
 infix 14 _==_
 _==_ : (x y : Real Γ) → Term Γ BOOL
@@ -91,6 +104,3 @@ _==_ = app₂ eq
 infix 14 _≤_
 _≤_ : (x y : Real Γ) → Term Γ BOOL
 _≤_ = app₂ leq
-
-
-

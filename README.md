@@ -19,8 +19,8 @@ AND-gate. We define our model as follows:
 ```agda
 layer0 : Layer Float 2 1
 layer0 = record
-  { weights    = [ 5.0e8 ] ∷ [ 5.0e8 ] ∷ []
-  ; biases     = [ -7.5e8 ]
+  { weights    = [ 5.0e1 ] ∷ [ 5.0e1 ] ∷ []
+  ; biases     = [ -7.5e1 ]
   ; activation = sigmoid
   }
 
@@ -28,29 +28,30 @@ model : Network Float 2 1 1
 model = layer0 ∷ []
 ```
 
-We can then check properties of the model by writing SMT assertions. Let’s write
-a script which checks if our model correctly implements the AND gate:
+We can then check properties of the model by specifying constraints that Amethyst
+then automatically converts into SMT assertions. Let’s write
+some constraints which check if our model correctly implements the AND gate:
 
 ```agda
-script : Script [] (Reals 2 ++ Reals 1) (SAT ∷ [])
-script = withReflectedNetworkAsScript model $ λ where
-
-  -- Give names to input and output nodes:
-  iv@(i₀ ∷ i₁ ∷ []) ov@(o₀ ∷ [])
-
-  -- Give remainder of the SMT-LIB script:
-    → assert (((i₀ == 0·0f) ∧ (i₁ == 0·0f)) ⇒ (o₀ == 0·0f))
-    ∷ assert (((i₀ == 0·0f) ∧ (i₁ == 1·0f)) ⇒ (o₀ == 0·0f))
-    ∷ assert (((i₀ == 1·0f) ∧ (i₁ == 0·0f)) ⇒ (o₀ == 0·0f))
-    ∷ assert (((i₀ == 1·0f) ∧ (i₁ == 1·0f)) ⇒ (o₀ == 1·0f))
-    ∷ check-sat
-    ∷ []
+exactConstraints : NetworkConstraints 2 1
+exactConstraints (i₀ ∷ i₁ ∷ []) (o₀ ∷ []) =
+  (i₀ == 0·0f ∧ i₁ == 0·0f ⇒ o₀ == 0·0f) ∷
+  (i₀ == 0·0f ∧ i₁ == 1·0f ⇒ o₀ == 0·0f) ∷
+  (i₀ == 1·0f ∧ i₁ == 0·0f ⇒ o₀ == 0·0f) ∷
+  (i₀ == 1·0f ∧ i₁ == 1·0f ⇒ o₀ == 1·0f) ∷
+  []
 ```
 
-We then run our script with Z3, and check that it returns `sat`:
+We then combine the model and the constraints to generate a script for Z3. 
+Note that in order to verify that the constraints hold for the model, 
+we need to negate the constraints and then check that the corresponding problem is unsatisfiable, 
+i.e. that there exists no assignment to the inputs and outputs that violate the constraints. 
+
+The `query` function automatically handles the negation and the script generation for us. 
+Therefore all that's left for us to do is to feed it into `z3` and check that the answer is `unsat`:
 
 ```agda
-_ : z3 script ≡ sat ∷ []
+_ : z3 (query model exactConstraints) ≡ unsat ∷ []
 _ = refl
 ```
 
@@ -69,13 +70,41 @@ _ = refl
 ```
 
 Yeah, that was easier… However, the SMT solver also allows us to run universally
-and existentially quantified expressions:
+and existentially quantified expressions. For example we might want to the network
+models the AND gate correctly for any values sufficiently close to 0.0 and 1.0.
+This can be done by defining some new predicates `truthy` and `falsey`:
 
 ```agda
--- pending…
+ε : ∀ {Γ} → Term Γ REAL
+ε = toReal 0.2
+
+truthy : ∀ {Γ} → Term Γ REAL → Term Γ BOOL
+truthy x = ∣ 1·0f - x ∣ ≤ ε
+
+falsey : ∀ {Γ} → Term Γ REAL → Term Γ BOOL
+falsey x = ∣ 0·0f - x ∣ ≤ ε
 ```
 
-Whoa, that’s very cool! Now we know our network is robust around both truthy and
+We can then rewrite our constraints to use these fuzzy values:
+
+```agda
+fuzzyConstraints : NetworkConstraints 2 1
+fuzzyConstraints (i₀ ∷ i₁ ∷ []) (o₀ ∷ []) =
+  (falsey i₀ ∧ falsey i₁ ⇒ falsey o₀) ∷
+  (falsey i₀ ∧ truthy i₁ ⇒ falsey o₀) ∷
+  (truthy i₀ ∧ falsey i₁ ⇒ falsey o₀) ∷
+  (truthy i₀ ∧ truthy i₁ ⇒ truthy o₀) ∷
+  []
+```
+
+and then rerun the query:
+
+```agda
+_ : z3 (query model fuzzyConstraints) ≡ unsat ∷ []
+_ = refl
+```
+
+Whoa, that’s very cool! Now we know our network is robust around both truthy and
 falsey inputs!
 
 Getting Started
@@ -83,9 +112,9 @@ Getting Started
 
 Amethyst requires Agda and several Agda libraries to work:
 
-- agda ([PR #4885][agda])
-- agda-stdlib ([PR #1285][agda-stdlib])
-- agdarsec ([PR #17][agdarsec)
+- agda ([master][agda])
+- agda-stdlib ([experimental][agda-stdlib])
+- agdarsec ([master][agdarsec)
 - schmitty ([latest][schmitty])
 
 Furthermore, Amethyst requires you to install any external solver you’d like to
@@ -129,12 +158,12 @@ using the Z3 API.
 [Sapphire]: https://github.com/wenkokke/sapphire
 [StarChild]: https://github.com/wenkokke/starchild
 [AND-Gate-2-Sigmoid-1]: https://wenkokke.github.io/amethyst/AND-Gate-2-Sigmoid-1.html
-[agda]: https://github.com/agda/agda/pull/4885
+[agda]: https://github.com/agda/agda/
 [agda-version]: https://img.shields.io/badge/Agda-PR%20%234885-blue
-[agda-stdlib]: https://github.com/agda/agda-stdlib/pull/1285
-[agda-stdlib-version]: https://img.shields.io/badge/agda-stdlib-PR%20%231285-blue
-[agdarsec]: https://github.com/gallais/agdarsec/pull/17
-[agdarsec-version]: https://img.shields.io/badge/agdarsec-PR%20%2317-blue
+[agda-stdlib]: https://github.com/agda/agda-stdlib/tree/experimental
+[agda-stdlib-version]: https://img.shields.io/badge/agdastdlib-experimental-blue
+[agdarsec]: https://github.com/gallais/agdarsec
+[agdarsec-version]: https://img.shields.io/badge/agdarsec-master-blue
 [schmitty]: https://github.com/wenkokke/schmitty
 [schmitty-version]: https://img.shields.io/badge/schmitty-latest-blue
 [Z3]: https://github.com/Z3Prover/z3
