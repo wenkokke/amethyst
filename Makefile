@@ -277,3 +277,21 @@ register-cvc4: $(AGDA_EXECUTABLES_FILE)
 ifeq (,$(findstring cvc4,$(shell cat $(AGDA_EXECUTABLES_FILE))))
 	@echo $(shell which cvc4) >> $(AGDA_EXECUTABLES_FILE)
 endif
+
+###################
+# Install Marabou #
+###################
+
+MARABOU := vendor/Marabou/build/Marabou
+
+vendor/Marabou:
+	git submodule init
+	git submodule update --recursive
+
+$(MARABOU): vendor/Marabou
+	cd vendor/Marabou \
+		&& mkdir build  \
+		&& cd build     \
+		&& cmake ..     \
+		&& cmake --build .
+
