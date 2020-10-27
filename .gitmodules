@@ -1,0 +1,3 @@
+[submodule "vendor/Marabou"]
+	path = vendor/Marabou
+	url = https://github.com/guykatzz/Marabou
