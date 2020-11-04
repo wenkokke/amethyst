@@ -10,21 +10,22 @@
 --   - Network    ([]; _∷_)
 --
 --------------------------------------------------------------------------------
+
 module Amethyst.Network.Base where
 
-open import Data.Fin as Fin using (Fin)
+import Amethyst.Data.Vec as Vec
+
+open import Data.Fin.Base as Fin using (Fin)
 open import Data.Float as Float using (Float)
-open import Data.Nat as Nat using (ℕ; suc; zero)
-open import Data.Vec as Vec using (Vec)
+open import Data.Nat.Base as Nat using (ℕ; suc; zero)
+open import Data.Vec.Base as Vec using (Vec; []; _∷_)
 open import Function using (id)
 
 private
   variable
     A : Set
     n : ℕ
-    inputs  : ℕ
     hidden  : ℕ
-    outputs : ℕ
     layers  : ℕ
 
 data Activation : Set where
@@ -40,8 +41,18 @@ record Layer (A : Set) (inputs outputs : ℕ) : Set where
     weights    : Vec (Vec A outputs) inputs
     biases     : Vec A outputs
 
+LayerSpec : ℕ → Set
+LayerSpec = Vec ℕ
+
+∣_₀∣ : LayerSpec n → ℕ
+∣ xs ₀∣ = Vec.first′ xs 0
+
+∣_ₙ∣ : LayerSpec n → ℕ
+∣ xs ₙ∣ = Vec.last′ xs 0
+
 infixr 5 _∷_
 
-data Network (A : Set) (inputs : ℕ) : (outputs layers : ℕ) → Set where
-  []  : Network A inputs inputs 0
-  _∷_ : Layer A inputs hidden → Network A hidden outputs layers → Network A inputs outputs (suc layers)
+data Network (A : Set) : ∀ {#layers : ℕ} → Vec ℕ #layers → Set where
+  []  : ∀ {n} → Network A (n ∷ [])
+  _∷_ : ∀ {n |lᵢ| |lᵢ₊₁|} {xs : LayerSpec n} →
+        Layer A |lᵢ| |lᵢ₊₁| → Network A (|lᵢ₊₁| ∷ xs) → Network A (|lᵢ| ∷ |lᵢ₊₁| ∷ xs)

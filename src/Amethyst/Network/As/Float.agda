@@ -13,14 +13,17 @@
 --------------------------------------------------------------------------------
 module Amethyst.Network.As.Float where
 
-open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Base
+  using (Network; []; _∷_; Layer; Activation; LayerSpec; ∣_₀∣; ∣_ₙ∣)
 open import Amethyst.Network.Approximation
 open import Amethyst.LinearAlgebra.As.Float
-open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Float
+import Amethyst.Data.Vec as Vec
+
 open import Data.Bool as Bool using (if_then_else_)
+open import Data.Fin as Fin using ()
 open import Data.Float as Float using (Float; _≤ᵇ_; _+_; _-_; _*_; _÷_; -_; e^_; tanh)
-open import Data.Nat as Nat using (ℕ)
+open import Data.Nat as Nat using (ℕ; zero; suc)
 open import Data.Product using (uncurry)
 open import Data.Vec as Vec using (Vec)
 open import Function using (_∘_; const; id)
@@ -45,10 +48,9 @@ private
 private
   variable
     inputs  : ℕ
-    hidden  : ℕ
     outputs : ℕ
     layers  : ℕ
-
+  
 -- |Eval an activation function as a function on vectors of floats.
 evalActivation : Activation → Vec Float n → Vec Float n
 evalActivation Activation.linear  = id
@@ -64,6 +66,7 @@ evalLayer l xs = evalActivation activation (biases ⊕ (xs v⊡m weights))
     open Layer l using (activation; biases; weights)
 
 -- |Eval a network as a function on vectors of floats.
-evalNetwork : Network Float inputs outputs layers → Vec Float inputs → Vec Float outputs
+evalNetwork : ∀ {ls : LayerSpec layers} → Network Float ls →
+              Vec Float ∣ ls ₀∣ → Vec Float ∣ ls ₙ∣
 evalNetwork []      = id
 evalNetwork (l ∷ n) = evalNetwork n ∘ evalLayer l
