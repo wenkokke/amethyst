@@ -52,14 +52,17 @@ def convert_layer(index, layer):
                 biases=indent_by(15, convert_vector(biases.tolist()[0])),
                 activation=convert_activation(activation))
 
-def convert_layer_list(layers, n_in, n_out):
+def convert_layer_list(layer_names, layer_sizes):
     """"""
-    pp = '[]'
-    for l in reversed(layers):
-        pp = '{l} ∷ {pp}'.format(l=l, pp=pp)
-    return ('model : Network Float {n_in} {n_out} {n_layers}\n'
-            'model = {layer_list}').format(
-                n_in=n_in, n_out=n_out, layer_list=pp, n_layers=len(layers))
+    layer_names_list = '[]'
+    layer_sizes_list = '[]'
+    for layer_name, layer_size in reversed(zip(layer_names, layer_sizes)):
+        layer_names_list = '{x} ∷ {xs}'.format(x=layer_name, xs=layer_names_list)
+        layer_sizes_list = '{x} ∷ {xs}'.format(x=layer_size, xs=layer_sizes_list)
+    return ('model : Network Float ({layer_sizes_list})\n'
+            'model = {layer_names_list}').format(
+                layer_sizes_list=layer_sizes_list,
+                layer_names_list=layer_names_list)
 
 def convert_ideal(ideal_label, ideal_in, ideal_out):
     """"""
@@ -81,8 +84,7 @@ def convert_model(module_name, model, ideal):
     # Print layer definitions
     layer_defns = []
     layer_names = []
-    n_in = None
-    n_out = None
+    layer_sizes = []
     for index, layer in enumerate(model.layers):
         params = layer.get_weights()
         if len(params) > 0:
@@ -90,12 +92,12 @@ def convert_model(module_name, model, ideal):
             rows = weights.shape[0]
             cols = weights.shape[1]
             layer_names.append('layer{}'.format(index))
-            if n_in is None: n_in = rows
-            n_out = cols
             layer_defns.append(convert_layer(index, layer))
+            if not layer_sizes: layer_sizes.append(rows)
+            layer_sizes.append(cols)
 
     # Print model definition
-    model_defn = convert_layer_list(layer_names, n_in, n_out)
+    model_defn = convert_layer_list(layer_names, layer_sizes)
 
     # Print ideals
     ideal_defns = []

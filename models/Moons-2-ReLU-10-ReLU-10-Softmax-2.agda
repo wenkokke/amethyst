@@ -49,5 +49,5 @@ layer2 = record
   ; activation = Activation.softmax
   }
 
-model : Network Float 2 2 3
-model = layer0 ∷ (layer1 ∷ (layer2 ∷ []))
+model : Network Float (2 ∷ 10 ∷ 10 ∷ 2 ∷ [])
+model = layer0 ∷ layer1 ∷ layer2 ∷ []

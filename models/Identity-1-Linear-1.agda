@@ -20,7 +20,7 @@ layer = record
   ; activation = linear
   }
 
-model : Network Float 1 1 1
+model : Network Float (1 ∷ 1 ∷ [])
 model = layer ∷ []
 
 _ : evalNetwork model (0.0 ∷ []) ≡ (0.0 ∷ [])
