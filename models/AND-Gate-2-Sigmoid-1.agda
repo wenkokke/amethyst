@@ -21,7 +21,7 @@ layer = record
   ; activation = sigmoid
   }
 
-model : Network Float 2 1 1
+model : Network Float (2 ∷ 1 ∷ [])
 model = layer ∷ []
 
 -- Test some exact constraints

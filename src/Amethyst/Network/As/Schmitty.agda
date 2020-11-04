@@ -19,11 +19,13 @@ module Amethyst.Network.As.Schmitty where
 
 open import SMT.Theories.Reals.Base using (true)
 
-open import Amethyst.Network.Base using (Network; []; _∷_; Layer; Activation)
+open import Amethyst.Network.Base
+  using (Network; []; _∷_; Layer; LayerSpec; Activation; ∣_₀∣; ∣_ₙ∣)
 open import Amethyst.Network.Approximation
 open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Schmitty
 open import Amethyst.LinearAlgebra.As.Schmitty
+import Amethyst.Data.Vec as Vec
 
 open import Data.Fin as Fin using (Fin; zero; suc)
 open import Data.Float as Float using (Float)
@@ -99,7 +101,7 @@ reflectLayer l xs = reflectActivation activation (biases′ ⊕ (xs v⊡m weight
 --  Takes a network description and an environment of SMT terms describing the
 --  network inputs, and returns an environment of SMT terms describing the network
 --  outputs.
-reflectNetwork : Network Float inputs outputs layers → Vec (Real Γ) inputs → Vec (Real Γ) outputs
+reflectNetwork : ∀ {n} {xs : Vec ℕ n} → Network Float xs → Vec (Real Γ) ∣ xs ₀∣ → Vec (Real Γ) ∣ xs ₙ∣
 reflectNetwork []      = id
 reflectNetwork (l ∷ n) = reflectNetwork n ∘ reflectLayer l
 
@@ -130,30 +132,28 @@ private
       xs ++ ys
     ∎
 
-
 -- |Convert a networks to an SMT script, and allow the caller to append further commands.
 withReflectedNetworkAsScript
-  : ∀ {Γ Ξ}
-  → Network Float inputs outputs layers
-  → ( (iv : Vec (Real (Reals inputs ++ Reals outputs)) inputs)
-    → (ov : Vec (Real (Reals inputs ++ Reals outputs)) outputs)
-    → (Script (Reals inputs ++ Reals outputs) Γ Ξ))
+  : ∀ {Γ Ξ} {ls : LayerSpec layers}
+  → Network Float ls
+  → ( (iv : Vec (Real (Reals ∣ ls ₀∣ ++ Reals ∣ ls ₙ∣)) ∣ ls ₀∣)
+    → (ov : Vec (Real (Reals ∣ ls ₀∣ ++ Reals ∣ ls ₙ∣)) ∣ ls ₙ∣)
+    → (Script (Reals ∣ ls ₀∣ ++ Reals ∣ ls ₙ∣) Γ Ξ))
   → Script [] Γ Ξ
-withReflectedNetworkAsScript {inputs} {outputs} n k
-  = ( Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals inputs) (Reals outputs))
-    $ declare-consts (List.reverse (Reals outputs))
-    $ declare-consts (List.reverse (Reals inputs))
-    $ assert
-      (Vec.foldr _
+withReflectedNetworkAsScript {ls = ls} n constraints
+  = ( Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))
+    $ declare-consts (List.reverse (Reals ∣ ls ₙ∣))
+    $ declare-consts (List.reverse (Reals ∣ ls ₀∣))
+    $ assert (Vec.foldr _
         (app₂ and)
         (app₀ true)
         (Vec.zipWith
           (app₂ eq)
-          (Eq.subst (λ Γ → Vec (Real Γ) outputs) (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs))) ov)
+          (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₙ∣) (Eq.sym (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) ov)
           (reflectNetwork n
-            (Eq.subst (λ Γ → Vec (Real Γ) inputs) (Eq.sym (ʳ++-reverse (Reals inputs) (Reals outputs))) iv))))
+            (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₀∣) (Eq.sym (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) iv))))
     ∷ []
-    ) ◆ k iv ov
+    ) ◆ constraints iv ov
   where
-  iv = Vec.map (var ∘ injectVar (Reals inputs) ∘ Reals∋Real) (Vec.allFin inputs)
-  ov = Vec.map (var ∘ raiseVar  (Reals inputs) ∘ Reals∋Real) (Vec.allFin outputs)
+  iv = Vec.map (var ∘ injectVar (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₀∣)
+  ov = Vec.map (var ∘ raiseVar  (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₙ∣)

@@ -16,10 +16,10 @@
 module Amethyst.Prelude where
 
 open import Algebra.Core using (Op₁; Op₂)
-open import Data.Bool using (Bool)
-open import Data.Nat using (ℕ)
-open import Data.List as List public using (List; []; _∷_; _++_)
-open import Data.Vec as Vec public using (Vec; []; _∷_; [_])
+open import Data.Bool.Base using (Bool)
+open import Data.Nat.Base using (ℕ)
+open import Data.List.Base as List public using (List; []; _∷_; _++_)
+open import Data.Vec.Base as Vec public using (Vec; []; _∷_; [_])
 open import Data.Float using (Float)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import SMT.Theories.Reals as Reals
@@ -43,15 +43,21 @@ NetworkConstraints inputs outputs =
 processConstraints : ∀ {Γ} → List (Term Γ BOOL) → Command Γ [] []
 processConstraints constraints = assert (app₁ not (List.foldr (app₂ and) (app₀ true) constraints))
 
-query : ∀ {inputs outputs layers} (let Γ = Reals inputs ++ Reals outputs)
-  → Network Float inputs outputs layers
+query : ∀ {n} {ls : LayerSpec n} →
+  (let inputs = ∣ ls ₀∣)
+  (let outputs = ∣ ls ₙ∣)
+  (let Γ = Reals inputs ++ Reals outputs)
+  → Network Float ls
   → NetworkConstraints inputs outputs
   → Script [] Γ (SAT ∷ [])
 query n c = withReflectedNetworkAsScript n
   (λ iv ov → processConstraints (c iv ov) ∷ check-sat ∷ [])
 
-queryWithModel : ∀ {inputs outputs layers} (let Γ = Reals inputs ++ Reals outputs)
-  → Network Float inputs outputs layers
+queryWithModel : ∀ {n} {ls : LayerSpec n}
+  (let inputs = ∣ ls ₀∣)
+  (let outputs = ∣ ls ₙ∣)
+  (let Γ = Reals inputs ++ Reals outputs)
+  → Network Float ls
   → NetworkConstraints inputs outputs
   → Script [] Γ (MODEL Γ ∷  [])
 queryWithModel n c = withReflectedNetworkAsScript n
