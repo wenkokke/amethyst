@@ -284,14 +284,20 @@ endif
 
 MARABOU := vendor/Marabou/build/Marabou
 
-vendor/Marabou:
-	git submodule init
-	git submodule update --recursive
+vendor/:
+	mkdir vendor/
 
-$(MARABOU): vendor/Marabou
-	cd vendor/Marabou \
-		&& mkdir build  \
-		&& cd build     \
-		&& cmake ..     \
-		&& cmake --build .
+vendor/Marabou: vendor/
+	curl -J -L https://github.com/guykatzz/Marabou/archive/laiv.zip -o vendor/Marabou.zip
+	unzip vendor/Marabou.zip -d vendor/
+	mv vendor/Marabou-laiv/ vendor/Marabou/
+	rm vendor/Marabou.zip
 
+vendor/Marabou/build/: vendor/Marabou/
+	mkdir vendor/Marabou/build/
+
+$(MARABOU): vendor/Marabou/build/
+	cd vendor/Marabou/build && cmake .. && cmake --build .
+
+.PHONY: marabou
+marabou: $(MARABOU)

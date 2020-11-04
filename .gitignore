@@ -2,3 +2,4 @@
 MAlonzo/**
 _build/
 .stack-work/
+vendor/
