@@ -25,7 +25,6 @@ open import Amethyst.Network.Approximation
 open import Amethyst.PiecewiseLinear.Base
 open import Amethyst.PiecewiseLinear.As.Schmitty
 open import Amethyst.LinearAlgebra.As.Schmitty
-import Amethyst.Data.Vec as Vec
 
 open import Data.Fin as Fin using (Fin; zero; suc)
 open import Data.Float as Float using (Float)
@@ -126,7 +125,7 @@ withReflectedNetworkAsScript {ls = ls} n constraints
           (`app₂ eq)
           (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₙ∣) (Eq.sym (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) ov)
           (reflectNetwork n
-            (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₀∣) (Eq.sym (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) iv))))
+                          (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₀∣) (Eq.sym (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) iv))))
     ∷ []
     ) ◆ constraints iv ov
   where

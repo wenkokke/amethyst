@@ -13,7 +13,7 @@
 
 module Amethyst.Network.Base where
 
-import Amethyst.Data.Vec as Vec
+import Data.Vec.Extra as Vec
 
 open import Data.Fin.Base as Fin using (Fin)
 open import Data.Float as Float using (Float)
@@ -45,10 +45,10 @@ LayerSpec : ℕ → Set
 LayerSpec = Vec ℕ
 
 ∣_₀∣ : LayerSpec n → ℕ
-∣ xs ₀∣ = Vec.first′ xs 0
+∣ xs ₀∣ = Vec.headOr xs 0
 
 ∣_ₙ∣ : LayerSpec n → ℕ
-∣ xs ₙ∣ = Vec.last′ xs 0
+∣ xs ₙ∣ = Vec.lastOr xs 0
 
 infixr 5 _∷_
 

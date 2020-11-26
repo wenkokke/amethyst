@@ -18,7 +18,6 @@ open import Amethyst.Network.Base
 open import Amethyst.Network.Approximation
 open import Amethyst.LinearAlgebra.As.Float
 open import Amethyst.PiecewiseLinear.As.Float
-import Amethyst.Data.Vec as Vec
 
 open import Data.Bool as Bool using (if_then_else_)
 open import Data.Fin as Fin using ()
