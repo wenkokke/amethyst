@@ -41,7 +41,8 @@ NetworkConstraints inputs outputs =
   where Γ = Reals inputs ++ Reals outputs
 
 processConstraints : ∀ {Γ} → List (Term Γ BOOL) → Command Γ [] []
-processConstraints constraints = assert (app₁ not (List.foldr (app₂ and) (app₀ true) constraints))
+processConstraints constraints =
+  `assert (`app₁ not (List.foldr (`app₂ and) (`app₀ true) constraints))
 
 query : ∀ {n} {ls : LayerSpec n} →
   (let inputs = ∣ ls ₀∣)
@@ -51,7 +52,7 @@ query : ∀ {n} {ls : LayerSpec n} →
   → NetworkConstraints inputs outputs
   → Script [] Γ (SAT ∷ [])
 query n c = withReflectedNetworkAsScript n
-  (λ iv ov → processConstraints (c iv ov) ∷ check-sat ∷ [])
+  (λ iv ov → processConstraints (c iv ov) ∷ `check-sat ∷ [])
 
 queryWithModel : ∀ {n} {ls : LayerSpec n}
   (let inputs = ∣ ls ₀∣)
@@ -61,7 +62,7 @@ queryWithModel : ∀ {n} {ls : LayerSpec n}
   → NetworkConstraints inputs outputs
   → Script [] Γ (MODEL Γ ∷  [])
 queryWithModel n c = withReflectedNetworkAsScript n
-  (λ iv ov → processConstraints (c iv ov) ∷ get-model ∷ [])
+  (λ iv ov → processConstraints (c iv ov) ∷ `get-model ∷ [])
 
 --------------------------------------------------------------------------------
 -- Boolean operators
@@ -72,41 +73,45 @@ private
 
 infixr 3 _⇒_
 _⇒_ : Op₂ (Term Γ BOOL)
-_⇒_ = app₂ implies
+_⇒_ = `app₂ implies
 
 infix 6 _∧_
 _∧_ : Op₂ (Term Γ BOOL)
-_∧_ = app₂ and
+_∧_ = `app₂ and
 
 infix 5 _∨_
 _∨_ : Op₂ (Term Γ BOOL)
-_∨_ = app₂ or
+_∨_ = `app₂ or
 
 infix 8 ¬_
 ¬_ : Op₁ (Term Γ BOOL)
-¬_ = app₁ not
+¬_ = `app₁ not
 
 --------------------------------------------------------------------------------
 -- Float constants
 
 0·0f 1·0f : Real Γ
-0·0f = lit (float 0.0)
-1·0f = lit (float 1.0)
+0·0f = `lit (float 0.0)
+1·0f = `lit (float 1.0)
 
 --------------------------------------------------------------------------------
 -- Float operators and relations
 
+infix 17 _+_
+_+_ : Op₂ (Term Γ REAL)
+_+_ = `app₂ add
+
 infix 17 _-_
 _-_ : Op₂ (Term Γ REAL)
-_-_ = app₂ sub
+_-_ = `app₂ sub
 
 ∣_∣ : Op₁ (Term Γ REAL)
-∣ x ∣ = app₃ ite (app₂ leq x 0·0f) (app₁ neg x) x
+∣ x ∣ = `app₃ ite (`app₂ leq x 0·0f) (`app₁ neg x) x
 
 infix 14 _==_
 _==_ : (x y : Real Γ) → Term Γ BOOL
-_==_ = app₂ eq
+_==_ = `app₂ eq
 
 infix 14 _≤_
 _≤_ : (x y : Real Γ) → Term Γ BOOL
-_≤_ = app₂ leq
+_≤_ = `app₂ leq

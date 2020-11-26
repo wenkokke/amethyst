@@ -32,6 +32,7 @@ open import Data.Float as Float using (Float)
 open import Data.List as List using (List; []; _∷_; _++_; _ʳ++_)
 open import Data.List.Relation.Unary.All using ([])
 import Data.List.Properties as List
+import Data.List.Properties.Extra as List
 open import Data.Nat as Nat using (ℕ; zero; suc)
 open import Data.Product as Prod using (_×_; _,_; uncurry)
 open import Data.Vec as Vec using (Vec; []; _∷_)
@@ -48,7 +49,7 @@ private
 
 private
   relu : Real Γ → Real Γ
-  relu x = app₃ ite (app₂ leq x (lit (nat 0))) (lit (nat 0)) x
+  relu x = `app₃ ite (`app₂ leq x (`lit (nat 0))) (`lit (nat 0)) x
 
   lexp : Real Γ → Real Γ
   lexp = reflect expApprox
@@ -61,6 +62,7 @@ private
 
   ltanh : Real Γ → Real Γ
   ltanh = reflect tanhApprox
+
 
 -- |Convert activation functions to SMT terms.
 --
@@ -105,33 +107,6 @@ reflectNetwork : ∀ {n} {xs : Vec ℕ n} → Network Float xs → Vec (Real Γ)
 reflectNetwork []      = id
 reflectNetwork (l ∷ n) = reflectNetwork n ∘ reflectLayer l
 
-private
-  -- |The reverse-append of two reversed lists is equivalent to the append of the lists.
-  --
-  --  NOTE: The variable contexts for a Script are in reversed order, so we pass
-  --        the reversed input/output contexts to `declare-consts` to ensure
-  --        that we end up with *doubly* reversed contexts in the Script.
-  --        We use this lemma to show that the doubly reversed contexts are
-  --        equivalent to the original input/output context.
-  --
-  --  NOTE: Perhaps this lemma should be submitted to Data.List.Properties?
-  --
-  ʳ++-reverse : ∀ {a} {A : Set a} (xs ys : List A) → List.reverse xs ʳ++ List.reverse ys  ʳ++ [] ≡ xs ++ ys
-  ʳ++-reverse xs ys =
-    begin
-      List.reverse xs ʳ++ List.reverse ys ʳ++ []
-    ≡⟨ List.ʳ++-defn (List.reverse xs) ⟩
-      List.reverse (List.reverse xs) ++ List.reverse ys  ʳ++ []
-    ≡⟨ List.reverse-involutive xs |> Eq.cong (_++ List.reverse ys ʳ++ []) ⟩
-      xs ++ List.reverse ys ʳ++ []
-    ≡⟨ List.ʳ++-defn (List.reverse ys) |> Eq.cong (xs ++_) ⟩
-      xs ++ List.reverse (List.reverse ys) ++ []
-    ≡⟨ List.reverse-involutive ys |> Eq.cong ((xs ++_) ∘ (_++ [])) ⟩
-      xs ++ ys ++ []
-    ≡⟨ List.++-identityʳ ys |> Eq.cong (xs ++_) ⟩
-      xs ++ ys
-    ∎
-
 -- |Convert a networks to an SMT script, and allow the caller to append further commands.
 withReflectedNetworkAsScript
   : ∀ {Γ Ξ} {ls : LayerSpec layers}
@@ -141,19 +116,19 @@ withReflectedNetworkAsScript
     → (Script (Reals ∣ ls ₀∣ ++ Reals ∣ ls ₙ∣) Γ Ξ))
   → Script [] Γ Ξ
 withReflectedNetworkAsScript {ls = ls} n constraints
-  = ( Eq.subst (λ Γ → Script [] Γ []) (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))
-    $ declare-consts (List.reverse (Reals ∣ ls ₙ∣))
-    $ declare-consts (List.reverse (Reals ∣ ls ₀∣))
-    $ assert (Vec.foldr _
-        (app₂ and)
-        (app₀ true)
+  = ( Eq.subst (λ Γ → Script [] Γ []) (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))
+    $ `declare-consts (List.reverse (Reals ∣ ls ₙ∣))
+    $ `declare-consts (List.reverse (Reals ∣ ls ₀∣))
+    $ `assert (Vec.foldr _
+        (`app₂ and)
+        (`app₀ true)
         (Vec.zipWith
-          (app₂ eq)
-          (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₙ∣) (Eq.sym (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) ov)
+          (`app₂ eq)
+          (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₙ∣) (Eq.sym (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) ov)
           (reflectNetwork n
-            (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₀∣) (Eq.sym (ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) iv))))
+            (Eq.subst (λ Γ → Vec (Real Γ) ∣ ls ₀∣) (Eq.sym (List.ʳ++-reverse (Reals ∣ ls ₀∣) (Reals ∣ ls ₙ∣))) iv))))
     ∷ []
     ) ◆ constraints iv ov
   where
-  iv = Vec.map (var ∘ injectVar (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₀∣)
-  ov = Vec.map (var ∘ raiseVar  (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₙ∣)
+  iv = Vec.map (`var ∘ injectVar (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₀∣)
+  ov = Vec.map (`var ∘ raiseVar  (Reals ∣ ls ₀∣) ∘ Reals∋Real) (Vec.allFin ∣ ls ₙ∣)

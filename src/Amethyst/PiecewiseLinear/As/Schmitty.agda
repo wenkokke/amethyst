@@ -32,7 +32,7 @@ private
   -- |Return the y-value corresponding to x on the line segment ls. If x is out of
   --  bounds, extrapolate the line segment.
   reflectLineSegment : (ls : LineSegment lower upper) → Real Γ → Real Γ
-  reflectLineSegment ls x = app₂ add (app₂ mul x (toReal slope)) (toReal intercept)
+  reflectLineSegment ls x = `app₂ add (`app₂ mul x (toReal slope)) (toReal intercept)
     where open LineSegment ls using (slope; intercept)
 
   -- |Return the y-value corresponding to x on the piecewise-linear function.
@@ -40,7 +40,7 @@ private
   reflectLineSegments : .{{NonZero pieces}} → (pl : LineSegments lower step pieces) → Real Γ → Real Γ
   reflectLineSegments {_} {lower} {step} (ls ∷ [])         x = reflectLineSegment ls x
   reflectLineSegments {_} {lower} {step} (ls ∷ pl@(_ ∷ _)) x
-    = app₃ ite (app₂ leq x (app₂ add (toReal lower) (toReal step))) (reflectLineSegment ls x)
+    = `app₃ ite (`app₂ leq x (`app₂ add (toReal lower) (toReal step))) (reflectLineSegment ls x)
     $ reflectLineSegments pl x
 
   -- |Return the y-value corresponding to an out-of-bounds x value,
@@ -54,6 +54,6 @@ private
 -- |Return the y-value corresponding to x on the piecewise-linear function.
 reflect : PiecewiseLinearFn → Real Γ → Real Γ
 reflect f x = let module F = PiecewiseLinearFn f in
-    app₃ ite (app₂ leq x (toReal F.lower)) (reflectOutOfBoundsStrat F.lowerOOBStrat (first F.lineSegments) true x)
-  $ app₃ ite (app₂ leq (toReal F.upper) x) (reflectOutOfBoundsStrat F.upperOOBStrat (first F.lineSegments) false x)
+    `app₃ ite (`app₂ leq x (toReal F.lower)) (reflectOutOfBoundsStrat F.lowerOOBStrat (first F.lineSegments) true x)
+  $ `app₃ ite (`app₂ leq (toReal F.upper) x) (reflectOutOfBoundsStrat F.upperOOBStrat (first F.lineSegments) false x)
   $ reflectLineSegments F.lineSegments x

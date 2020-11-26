@@ -18,4 +18,5 @@ import Amethyst.LinearAlgebra.As.Schmitty
 import Amethyst.LinearAlgebra.As.Float
 import Amethyst.LinearAlgebra.Base
 import Amethyst.Data.Vec
+import Data.List.Properties.Extra
 
